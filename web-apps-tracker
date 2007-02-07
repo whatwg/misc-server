@@ -1,0 +1,305 @@
+#!/usr/bin/python
+# XXX ...
+
+# Make sure we have a module for doing shell scripts and one for simple web forms.
+import os, cgi, re, time;
+
+mapping = {
+  "e": "editorial",
+  "a": "authors",
+  "c": "conformance-checkers",
+  "g": "gecko",
+  "i": "internet-explorer",
+  "o": "opera",
+  "w": "webkit",
+  "t": "tools",
+  "0": "draft-content",
+  "1": "stable-draft",
+  "2": "implemented",
+  "3": "stable"
+}
+
+def parseLogLine(line):
+  classes = []
+  if line.startswith("["):
+    for c in line:
+      if c == ")":
+        break
+      try:
+        classes.append(mapping[c])
+      except:
+        continue
+    line = line.split(") ", 1)[-1]
+  return (line, classes)
+
+def irrelevantLine(line):
+  if line == "------------------------------------------------------------------------":
+    return False
+  return True
+
+def filterLog(l):
+  l = filter(None, l)
+  return filter(irrelevantLine, l)
+
+def formatLog(list):
+  list = filterLog(list)
+  output = ""
+  if list:
+    output += "<ol id=\"log\">"
+    for x in range(0, len(list) -1, 2):
+      logInfo = parseLogLine(list[x+1])
+      classInfo = ""
+      if logInfo[1]:
+        classInfo = " class=\"%s\"" % " ".join(logInfo[1])
+      output += "\n   <li value=\"%s\"%s>%s</li>" % (getNumber(list[x], 1), classInfo, logInfo[0])
+    output += "\n  </ol>"
+  return output
+
+def formatRichLog(list):
+  list = filterLog(list)
+  output = ""
+  if list:
+    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Date and time</th></tr>"
+    for x in range(0, len(list) -1, 2):
+      logInfo = parseLogLine(list[x+1])
+      classInfo = ""
+      if logInfo[1]:
+        classInfo = " class=\"%s\"" % " ".join(logInfo[1])
+      nr = getNumber(list[x], 1)
+      link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
+      output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, logInfo[0], getDate(list[x]))
+    output += "\n  </table>"
+  return output
+
+def getNumber(s, n):
+  return re.split("\D+", s)[n]
+
+def getDate(s):
+  date = re.split(" \(", re.split(" \| ", s)[2])[0]
+  #return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800")) + 60 * 60 * 8))
+  return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800"))))
+
+def getDiffCommand(rFrom, rTo=0):
+  command = "svn diff --old http://svn.whatwg.org/webapps/source%s --new http://svn.whatwg.org/webapps/source%s"
+  if rTo:
+    return command % ("@%s" % rFrom, "@%s" % rTo)
+  else:
+    return command % ("@%s" % rFrom, "")
+
+def getLogCommand(rFrom, rTo):
+  rFrom += 1
+  return "svn log http://svn.whatwg.org/webapps/source -r %s:%s" % (rFrom, rTo)
+
+def isInt(s):
+  try:
+    ret = int(float(s))
+    return True
+  except ValueError:
+    return False
+
+def toInt(s):
+  return int(float(s))
+
+# Handling incoming data.
+showDiff = False
+rFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
+rTo = 0
+
+form = cgi.FieldStorage();
+
+if form.has_key("from"):
+  if isInt(form["from"].value):
+    rFrom = toInt(form["from"].value)
+    showDiff = True
+  else:
+    showDiff = False
+
+if form.has_key("to"):
+  if isInt(form["to"].value):
+    rTo = toInt(form["to"].value)
+    if showDiff:
+      if 0 < rTo < rFrom:
+        rToOld = rTo;
+        rTo = rFrom;
+        rFrom = rToOld;
+
+document = """Content-Type:text/html;charset=UTF-8
+
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta name="robots" content="index, nofollow">
+  <title>Web Applications 1.0 ((X)HTML5) Tracker</title>
+  <style>
+   html { font:1em/1 Arial, sans-serif }
+   form { margin:0 }
+   form p { margin:.5em }
+   form label input { width:3em }
+   table#log { border-collapse:collapse }
+   table#log td { padding:.1em .5em }
+   table#log td:first-child + td + td { white-space:nowrap }
+
+   tr.draft-content { background-color:#eee; }
+   tr.stabe-draft { background-color:#fcc; }
+   tr.implemented { background-color:#f99; }
+   tr.stable { background-color:#f66; }
+   tr.editorial { color:gray; }
+
+   td :link { color:inherit; }
+   td a { text-decoration:none; }
+   td a:hover { text-decoration:underline; }
+   td a { display:block; }
+
+   /* filter */
+   .hasjs tr[class] { display:none; }
+   .noeditorial tr.editorial,
+   .noauthors tr.authors,
+   .noconformance-checkers tr.conformance-checkers,
+   .nogecko tr.gecko,
+   .nointernet-explorer tr.internet-explorer,
+   .noopera tr.opera,
+   .nowebkit tr.webkit { display:none !important; }
+   .draft-content tr.draft-content,
+   .stable-draft tr.stable-draft,
+   .implemented tr.implemented,
+   .stable tr.stable { display:table-row; }
+ </style>
+  <script>
+   function createCookie(name,value,days) {
+    var expires = ""
+    if(days) {
+     var date = new Date()
+     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+     expires = "; expires=" + date.toGMTString()
+    }
+    document.cookie = name+"="+value+expires+"; path=/"
+   }
+   function readCookie(name) {
+    name += "="
+    var ca = document.cookie.split(';')
+    for(var i=0; i < ca.length; i++) {
+     var c = ca[i]
+     while(c.charAt(0)==' ')
+      c = c.substring(1,c.length)
+     if(c.indexOf(name) == 0)
+      return c.substring(name.length,c.length)
+    }
+    return null;
+   }
+   function getFieldValue(idName) { return document.getElementById(idName).value }
+   function setFieldValue(idName, n) { document.getElementById(idName).value = n }
+   function setFrom(n) {
+    createCookie('from', n, 30)
+    setFieldValue('from', n)
+    setFieldValue('to', '')
+   }
+   window.onload = function() {
+    function addClass(elm, className) {
+     if (elm.className.indexOf(new RegExp("\\b" + className + "\\b")) == -1)
+      elm.className += " "+className;
+    }
+    function removeClass(elm, className) {
+     elm.className = elm.className.replace(new RegExp(className, "g"), "");
+    }
+    var form = document.forms[0];
+    form.onchange = function(e) {
+     var target = e.target;
+     if(target.type != "checkbox") return;
+     if(target.name == "editorial" ||
+        target.name == "authors" ||
+        target.name == "conformance-checkers" ||
+        target.name == "gecko" ||
+        target.name == "internet-explorer" ||
+        target.name == "opera" ||
+        target.name == "webkit") {
+     if(target.checked)
+      removeClass(document.body, "no"+target.name);
+     else
+      addClass(document.body, "no"+target.name);
+     } else {
+      if(target.checked)
+       addClass(document.body, target.name);
+      else
+       removeClass(document.body, target.name);
+     }
+    }
+    if(form.editorial.checked == false)
+     document.body.className += " noeditorial";
+    if(form.authors.checked == false)
+     document.body.className += " noauthors";
+    if(form["conformance-checkers"].checked == false)
+     document.body.className += " noconformance-checkers";
+    if(form.gecko.checked == false)
+     document.body.className += " nogecko";
+    if(form["internet-explorer"].checked == false)
+     document.body.className += " nointernet-explorer";
+    if(form.opera.checked == false)
+     document.body.className += " noopera";
+    if(form.webkit.checked == false)
+     document.body.className += " nowebkit";
+    if(form["draft-content"].checked == false)
+     removeClass(document.body, "draft-content");
+    if(form["stable-draft"].checked == false)
+     removeClass(document.body, "stable-draft");
+    if(form.implemented.checked == false)
+     removeClass(document.body, "stable-draft");
+    if(form.stable.checked == false)
+     removeClass(document.body, "stable");
+    document.body.className += " hasjs";
+   }
+  </script>
+ </head>
+ <body class="draft-content stable-draft implemented stable">
+  <h1>Web Applications 1.0 ((X)HTML5) Tracker</h1>
+  <form>
+   <fieldset>
+    <legend>Filter</legend>
+    <p>Type/affects:
+     <label><input type=checkbox name=editorial checked> Editorial</label>
+     <label><input type=checkbox name=authors checked> Authors</label>
+     <label><input type=checkbox name=conformance-checkers checked> Conformance checkers</label>
+     <label><input type=checkbox name=gecko checked> Gecko</label>
+     <label><input type=checkbox name=internet-explorer checked> Internet Explorer</label>
+     <label><input type=checkbox name=opera checked> Opera</label>
+     <label><input type=checkbox name=webkit checked> WebKit</label>
+    </p>
+    <p>Stability:
+     <label><input type=checkbox name=draft-content checked> Draft content</label>
+     <label><input type=checkbox name=stable-draft checked> Stable draft</label>
+     <label><input type=checkbox name=implemented checked> Implemented</label>
+     <label><input type=checkbox name=stable checked> Stable</label>
+    </p>
+   </fieldset>
+  </form>
+  <form>
+   <fieldset>
+    <p>
+     <label>From: <input id="from" type="number" min="1" value="%s" name="from" required="required"></label>
+     <label>To: <input id="to" type="number" min="0" value="%s" name="to"></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)</p>
+    <p><input type="submit" value="Generate diff"></p>
+   </fieldset>
+  </form>
+  <script>
+   if(getFieldValue('from') == "" && readCookie('from') != null)
+    setFrom(readCookie('from'))
+  </script>
+  <hr>
+  %s
+ </body>
+</html>"""
+
+if not (showDiff):
+  log = formatRichLog(cgi.escape(os.popen("svn log http://svn.whatwg.org/webapps/source --limit 100").read()).splitlines())
+  #log = cgi.escape(os.popen("svn log --help").read())
+  print document % ("", "", log)
+else:
+  diff = cgi.escape(os.popen(getDiffCommand(rFrom, rTo)).read())
+  if diff != "":
+    rTo = getNumber(diff, 2)
+    log = formatLog(cgi.escape(os.popen(getLogCommand(rFrom, rTo)).read()).splitlines())
+    result = """%s
+  <pre id="diff">%s</pre>
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (log, diff, rTo)
+    print document % (rFrom, rTo, result)
+  else:
+    print document % (rFrom, "", "No result.")
