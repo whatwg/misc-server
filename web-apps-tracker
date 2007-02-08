@@ -139,11 +139,11 @@ document = """Content-Type:text/html;charset=UTF-8
    table#log td { padding:.1em .5em }
    table#log td:first-child + td + td { white-space:nowrap }
 
-   tr.draft-content { background-color:#eee; }
-   tr.stabe-draft { background-color:#fcc; }
-   tr.implemented { background-color:#f99; }
-   tr.stable { background-color:#f66; }
-   tr.editorial { color:gray; }
+   .draft-content { background-color:#eee; }
+   .stabe-draft { background-color:#fcc; }
+   .implemented { background-color:#f99; }
+   .stable { background-color:#f66; }
+   .editorial { color:gray; }
 
    td :link { color:inherit; }
    td a { text-decoration:none; }
@@ -152,17 +152,27 @@ document = """Content-Type:text/html;charset=UTF-8
 
    /* filter */
    .hasjs tr[class] { display:none; }
-   .noeditorial tr.editorial,
-   .noauthors tr.authors,
-   .noconformance-checkers tr.conformance-checkers,
-   .nogecko tr.gecko,
-   .nointernet-explorer tr.internet-explorer,
-   .noopera tr.opera,
-   .nowebkit tr.webkit { display:none !important; }
-   .draft-content tr.draft-content,
-   .stable-draft tr.stable-draft,
-   .implemented tr.implemented,
-   .stable tr.stable { display:table-row; }
+   .negfilter-e tr.editorial { display:none !important; }
+   .filter-a tr.authors,
+   .filter-c tr.conformance-checkers,
+   .filter-g tr.gecko,
+   .filter-i tr.internet-explorer,
+   .filter-o tr.opera,
+   .filter-w tr.webkit,
+   .filter-0 tr.draft-content,
+   .filter-1 tr.stable-draft,
+   .filter-2 tr.implemented,
+   .filter-3 tr.stable { display:table-row; !display:block; /* ie7 */ }
+   .filter-a li.authors,
+   .filter-c li.conformance-checkers,
+   .filter-g li.gecko,
+   .filter-i li.internet-explorer,
+   .filter-o li.opera,
+   .filter-w li.webkit,
+   .filter-0 li.draft-content,
+   .filter-1 li.stable-draft,
+   .filter-2 li.implemented,
+   .filter-3 li.stable { display:list-item; }
  </style>
   <script>
    function createCookie(name,value,days) {
@@ -205,17 +215,11 @@ document = """Content-Type:text/html;charset=UTF-8
     form.onchange = function(e) {
      var target = e.target;
      if(target.type != "checkbox") return;
-     if(target.name == "editorial" ||
-        target.name == "authors" ||
-        target.name == "conformance-checkers" ||
-        target.name == "gecko" ||
-        target.name == "internet-explorer" ||
-        target.name == "opera" ||
-        target.name == "webkit") {
-     if(target.checked)
-      removeClass(document.body, "no"+target.name);
-     else
-      addClass(document.body, "no"+target.name);
+     if(target.name == "negfilter-e") {
+      if(target.checked)
+       removeClass(document.body, target.name);
+      else
+       addClass(document.body, target.name);
      } else {
       if(target.checked)
        addClass(document.body, target.name);
@@ -223,51 +227,53 @@ document = """Content-Type:text/html;charset=UTF-8
        removeClass(document.body, target.name);
      }
     }
-    if(form.editorial.checked == false)
-     document.body.className += " noeditorial";
-    if(form.authors.checked == false)
-     document.body.className += " noauthors";
-    if(form["conformance-checkers"].checked == false)
-     document.body.className += " noconformance-checkers";
-    if(form.gecko.checked == false)
-     document.body.className += " nogecko";
-    if(form["internet-explorer"].checked == false)
-     document.body.className += " nointernet-explorer";
-    if(form.opera.checked == false)
-     document.body.className += " noopera";
-    if(form.webkit.checked == false)
-     document.body.className += " nowebkit";
-    if(form["draft-content"].checked == false)
-     removeClass(document.body, "draft-content");
-    if(form["stable-draft"].checked == false)
-     removeClass(document.body, "stable-draft");
-    if(form.implemented.checked == false)
-     removeClass(document.body, "stable-draft");
-    if(form.stable.checked == false)
-     removeClass(document.body, "stable");
+    if(form["negfilter-e"].checked == false)
+     document.body.className += "negfilter-e";
+    if(form["filter-a"].checked == false)
+     removeClass(document.body, "filter-a");
+    if(form["filter-c"].checked == false)
+     removeClass(document.body, "filter-c");
+    if(form["filter-g"].checked == false)
+     removeClass(document.body, "filter-g");
+    if(form["filter-i"].checked == false)
+     removeClass(document.body, "filter-i");
+    if(form["filter-o"].checked == false)
+     removeClass(document.body, "filter-o");
+    if(form["filter-w"].checked == false)
+     removeClass(document.body, "filter-w");
+    if(form["filter-0"].checked == false)
+     removeClass(document.body, "filter-0");
+    if(form["filter-1"].checked == false)
+     removeClass(document.body, "filter-1");
+    if(form["filter-2"].checked == false)
+     removeClass(document.body, "filter-2");
+    if(form["filter-3"].checked == false)
+     removeClass(document.body, "filter-3");
     document.body.className += " hasjs";
    }
   </script>
  </head>
- <body class="draft-content stable-draft implemented stable">
+ <body class="filter-a filter-c filter-g filter-i filter-o filter-w filter-0 filter-1 filter-2 filter-3">
   <h1>Web Applications 1.0 ((X)HTML5) Tracker</h1>
   <form>
    <fieldset>
     <legend>Filter</legend>
-    <p>Type/affects:
-     <label><input type=checkbox name=editorial checked> Editorial</label>
-     <label><input type=checkbox name=authors checked> Authors</label>
-     <label><input type=checkbox name=conformance-checkers checked> Conformance checkers</label>
-     <label><input type=checkbox name=gecko checked> Gecko</label>
-     <label><input type=checkbox name=internet-explorer checked> Internet Explorer</label>
-     <label><input type=checkbox name=opera checked> Opera</label>
-     <label><input type=checkbox name=webkit checked> WebKit</label>
+    <p>Type:
+     <label><input type=checkbox name=negfilter-e checked> Editorial</label>
+    </p>
+    <p>Affects:
+     <label><input type=checkbox name=filter-a checked> Authors</label>
+     <label><input type=checkbox name=filter-c checked> Conformance checkers</label>
+     <label><input type=checkbox name=filter-g checked> Gecko</label>
+     <label><input type=checkbox name=filter-i checked> Internet Explorer</label>
+     <label><input type=checkbox name=filter-o checked> Opera</label>
+     <label><input type=checkbox name=filter-w checked> WebKit</label>
     </p>
     <p>Stability:
-     <label><input type=checkbox name=draft-content checked> Draft content</label>
-     <label><input type=checkbox name=stable-draft checked> Stable draft</label>
-     <label><input type=checkbox name=implemented checked> Implemented</label>
-     <label><input type=checkbox name=stable checked> Stable</label>
+     <label><input type=checkbox name=filter-0 checked> Draft content</label>
+     <label><input type=checkbox name=filter-1 checked> Stable draft</label>
+     <label><input type=checkbox name=filter-2 checked> Implemented</label>
+     <label><input type=checkbox name=filter-3 checked> Stable</label>
     </p>
    </fieldset>
   </form>
