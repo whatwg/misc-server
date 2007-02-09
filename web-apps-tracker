@@ -61,7 +61,7 @@ def formatRichLog(logList):
   logList = filterLog(logList)
   output = ""
   if logList:
-    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
+    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time</th></tr>"
     for line in range(0, len(logList) - 1, 2):
       logInfo = parseLogLine(logList[line+1])
       classInfo = ""
