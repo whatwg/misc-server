@@ -2,7 +2,11 @@
 # XXX ...
 
 # Make sure we have a module for doing shell scripts and one for simple web forms.
-import os, cgi, re, time;
+import os, cgi, re, time
+try:
+  import xml.utils.iso8601
+except:
+  pass
 
 mapping = {
   "e": "editorial",
@@ -23,61 +27,74 @@ def parseLogLine(line):
   classes = []
   if line.startswith("["):
     for c in line:
+      if c in mapping:
+        classes.append(mapping[c])
       if c == ")":
         break
-      try:
-        classes.append(mapping[c])
-      except:
-        continue
-    line = line.split(") ", 1)[-1]
-  return (line, classes)
+    line = line.split(") ", 1)[-1] # any particular reason why this is -1?
+  return {"line": line, "classes": classes}
 
-def irrelevantLine(line):
-  if line == "------------------------------------------------------------------------":
-    return False
-  return True
 
-def filterLog(l):
-  l = filter(None, l)
-  return filter(irrelevantLine, l)
 
-def formatLog(list):
-  list = filterLog(list)
+def filterLog(logList):
+  return [key for key in logList if key and key != "-" * 72]
+
+
+
+def formatLog(logList):
+  logList = filterLog(logList)
   output = ""
-  if list:
+  if logList:
     output += "<ol id=\"log\">"
-    for x in range(0, len(list) -1, 2):
-      logInfo = parseLogLine(list[x+1])
+    for line in range(0, len(logList) - 1, 2):
+      logInfo = parseLogLine(logList[line+1])
       classInfo = ""
-      if logInfo[1]:
-        classInfo = " class=\"%s\"" % " ".join(logInfo[1])
-      output += "\n   <li value=\"%s\"%s>%s</li>" % (getNumber(list[x], 1), classInfo, logInfo[0])
+      if logInfo["classes"]:
+        classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
+      output += "\n   <li value=\"%s\"%s>%s</li>" % (getNumber(logList[line], 1), classInfo, logInfo["line"])
     output += "\n  </ol>"
   return output
 
-def formatRichLog(list):
-  list = filterLog(list)
+
+
+def formatRichLog(logList):
+  logList = filterLog(logList)
   output = ""
-  if list:
-    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Date and time</th></tr>"
-    for x in range(0, len(list) -1, 2):
-      logInfo = parseLogLine(list[x+1])
+  if logList:
+    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
+    for line in range(0, len(logList) - 1, 2):
+      logInfo = parseLogLine(logList[line+1])
       classInfo = ""
-      if logInfo[1]:
-        classInfo = " class=\"%s\"" % " ".join(logInfo[1])
-      nr = getNumber(list[x], 1)
+      if logInfo["classes"]:
+        classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
+      nr = getNumber(logList[line], 1)
       link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
-      output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, logInfo[0], getDate(list[x]))
+      output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, logInfo["line"], getDate(logList[line]))
     output += "\n  </table>"
   return output
+
+
 
 def getNumber(s, n):
   return re.split("\D+", s)[n]
 
+
+
 def getDate(s):
   date = re.split(" \(", re.split(" \| ", s)[2])[0]
   #return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800")) + 60 * 60 * 8))
-  return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800"))))
+  #return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800"))))
+  
+  # TODO: this date parsing can probably be reduced, but it's less fragile than before
+  try:
+    isoDate = date.replace(" ", "T", 1).replace(" ", "") # Convert to ISO 8601 format
+    epochDate = xml.utils.iso8601.parse(isoDate) # Convert to seconds since epoch
+    date = time.strftime("%Y-%m-%d %H:%M", time.gmtime(epochDate)) # To UTC and format
+    return date
+  except:
+    return date
+
+
 
 def getDiffCommand(rFrom, rTo=0):
   command = "svn diff --old http://svn.whatwg.org/webapps/source%s --new http://svn.whatwg.org/webapps/source%s"
@@ -86,42 +103,59 @@ def getDiffCommand(rFrom, rTo=0):
   else:
     return command % ("@%s" % rFrom, "")
 
+
+
 def getLogCommand(rFrom, rTo):
   rFrom += 1
   return "svn log http://svn.whatwg.org/webapps/source -r %s:%s" % (rFrom, rTo)
 
-def isInt(s):
-  try:
-    ret = int(float(s))
-    return True
-  except ValueError:
-    return False
+
 
 def toInt(s):
   return int(float(s))
 
-# Handling incoming data.
-showDiff = False
-rFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
-rTo = 0
 
-form = cgi.FieldStorage();
 
-if form.has_key("from"):
-  if isInt(form["from"].value):
-    rFrom = toInt(form["from"].value)
-    showDiff = True
-  else:
-    showDiff = False
+def startFormatting():
+  # Handling incoming data.
+  showDiff = False
+  rFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
+  rTo = 0
 
-if form.has_key("to"):
-  if isInt(form["to"].value):
-    rTo = toInt(form["to"].value)
-    if showDiff:
+  form = cgi.FieldStorage()
+
+  if "from" in form:
+    try:
+      rFrom = toInt(form["from"].value)
+      showDiff = True
+    except:
+      pass
+
+  if showDiff and "to" in form:
+    try:
+      rTo = toInt(form["to"].value)
       if 0 < rTo < rFrom:
-        rToOld = rTo;
-        rTo = rFrom;
-        rFrom = rToOld;
+        rFrom, rTo = rTo, rFrom
+    except:
+      pass
+
+  if not showDiff:
+    log = formatRichLog(cgi.escape(os.popen("svn log http://svn.whatwg.org/webapps/source --limit 100").read()).splitlines())
+    #log = cgi.escape(os.popen("svn log --help").read())
+    print document % ("", "", log)
+  else:
+    diff = cgi.escape(os.popen(getDiffCommand(rFrom, rTo)).read())
+    if diff:
+      rTo = getNumber(diff, 2)
+      log = formatLog(cgi.escape(os.popen(getLogCommand(rFrom, rTo)).read()).splitlines())
+      result = """%s
+  <pre id="diff">%s</pre>
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (log, diff, rTo)
+      print document % (rFrom, rTo, result)
+    else:
+      print document % (rFrom, "", "No result.")
+
+
 
 document = """Content-Type:text/html;charset=UTF-8
 
@@ -294,18 +328,7 @@ document = """Content-Type:text/html;charset=UTF-8
  </body>
 </html>"""
 
-if not (showDiff):
-  log = formatRichLog(cgi.escape(os.popen("svn log http://svn.whatwg.org/webapps/source --limit 100").read()).splitlines())
-  #log = cgi.escape(os.popen("svn log --help").read())
-  print document % ("", "", log)
-else:
-  diff = cgi.escape(os.popen(getDiffCommand(rFrom, rTo)).read())
-  if diff != "":
-    rTo = getNumber(diff, 2)
-    log = formatLog(cgi.escape(os.popen(getLogCommand(rFrom, rTo)).read()).splitlines())
-    result = """%s
-  <pre id="diff">%s</pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (log, diff, rTo)
-    print document % (rFrom, rTo, result)
-  else:
-    print document % (rFrom, "", "No result.")
+
+
+if __name__ == "__main__":
+  startFormatting()
