@@ -3,10 +3,6 @@
 
 # Make sure we have a module for doing shell scripts and one for simple web forms.
 import os, cgi, re, time
-try:
-  import xml.utils.iso8601
-except:
-  pass
 
 mapping = {
   "e": "editorial",
@@ -61,7 +57,7 @@ def formatRichLog(logList):
   logList = filterLog(logList)
   output = ""
   if logList:
-    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time</th></tr>"
+    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
     for line in range(0, len(logList) - 1, 2):
       logInfo = parseLogLine(logList[line+1])
       classInfo = ""
@@ -82,17 +78,7 @@ def getNumber(s, n):
 
 def getDate(s):
   date = re.split(" \(", re.split(" \| ", s)[2])[0]
-  #return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800")) + 60 * 60 * 8))
-  #return time.asctime(time.gmtime(time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S -0800"))))
-  
-  # TODO: this date parsing can probably be reduced, but it's less fragile than before
-  try:
-    isoDate = date.replace(" ", "T", 1).replace(" ", "") # Convert to ISO 8601 format
-    epochDate = xml.utils.iso8601.parse(isoDate) # Convert to seconds since epoch
-    date = time.strftime("%Y-%m-%d %H:%M", time.gmtime(epochDate)) # To UTC and format
-    return date
-  except:
-    return date
+  return date[0:16] # Chops off seconds and time zone
 
 
 
@@ -121,6 +107,7 @@ def startFormatting():
   showDiff = False
   rFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
   rTo = 0
+  os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
 
   form = cgi.FieldStorage()
 
