@@ -76,7 +76,7 @@ def formatLog(logList):
     return output
 
 
-def formatRichLog(logList):
+def formatRichLog(logList, source):
     output = ""
     if logList:
         output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
@@ -87,6 +87,8 @@ def formatRichLog(logList):
                 classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
             nr = getNumber(entry["info"], 1)
             link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
+            if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
+                link += "&amp;source=%s" % source
             output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
         output += "\n  </table>"
     return output
@@ -149,7 +151,7 @@ def startFormatting():
     if not showDiff:
         svnLog = os.popen("svn log %s --limit 100" % source)
         parsedLog = parseRawLog(svnLog)
-        formattedLog = formatRichLog(parsedLog)
+        formattedLog = formatRichLog(parsedLog, source)
         print document % ("", "", formattedLog)
     else:
         diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
