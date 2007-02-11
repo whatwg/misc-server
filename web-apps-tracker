@@ -216,8 +216,8 @@ document = """Content-Type:text/html;charset=UTF-8
    td a { display:block; }
 
    /* filter */
-   .hasjs tr[class] { display:none; }
-   .negfilter-e tr.editorial { display:none !important; }
+   .hasjs tr[class], .hasjs li[class] { display:none; }
+   .negfilter-e .editorial { display:none !important; }
    .filter-a tr.authors,
    .filter-c tr.conformance-checkers,
    .filter-g tr.gecko,
