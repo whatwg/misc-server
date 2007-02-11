@@ -97,7 +97,7 @@ def formatRichLog(logList, source):
 def formatDiff(diff):
     diff = diff.splitlines()
     diffList = []
-    formatting = """<div class="%s">%s</div>"""
+    formatting = """<span class="%s">%s</span>"""
 
     for line in diff:
         if line.startswith("@@"):
