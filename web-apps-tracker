@@ -94,6 +94,25 @@ def formatRichLog(logList, source):
     return output
 
 
+def formatDiff(diff):
+    diff = diff.splitlines()
+    diffList = []
+    formatting = """<div class="%s">%s</div>"""
+
+    for line in diff:
+        if line.startswith("@@"):
+            diffList.append(formatting % ("line-info", line))
+        elif line.startswith("+"):
+            diffList.append(formatting % ("addition", line))
+        elif line.startswith("-"):
+            diffList.append(formatting % ("deletion", line))
+        else:
+            diffList.append(line)
+
+    return "\n".join(diffList)
+            
+
+
 def getNumber(s, n):
     return re.split("\D+", s)[n]
 
@@ -155,6 +174,7 @@ def startFormatting():
         print document % ("", "", formattedLog)
     else:
         diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
+        formattedDiff = formatDiff(diff)
         if diff:
             revTo = getNumber(diff, 2)
             svnLog = os.popen(getLogCommand(source, revFrom, revTo))
@@ -162,7 +182,7 @@ def startFormatting():
             formattedLog = formatLog(parsedLog)
             result = """%s
   <pre id="diff">%s</pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (formattedLog, diff, revTo)
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (formattedLog, formattedDiff, revTo)
             print document % (revFrom, revTo, result)
         else:
             print document % (revFrom, "", "No result.")
@@ -218,6 +238,11 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-1 li.stable-draft,
    .filter-2 li.implemented,
    .filter-3 li.stable { display:list-item; }
+   
+   #diff { display: inline-block; }
+   #diff .deletion { background: #fdd; color: #900 }
+   #diff .addition { background: #dfd; color: #090 }
+   #diff .line-info { background: #eee; color: #000 }
  </style>
   <script>
    function createCookie(name,value,days) {
