@@ -1,147 +1,169 @@
-#!/usr/bin/python
-# XXX ...
+#!/usr/bin/env python
 
 # Make sure we have a module for doing shell scripts and one for simple web forms.
-import os, cgi, re, time
+import os
+import cgi
+import re
+import time
 
 mapping = {
-  "e": "editorial",
-  "a": "authors",
-  "c": "conformance-checkers",
-  "g": "gecko",
-  "i": "internet-explorer",
-  "o": "opera",
-  "w": "webkit",
-  "t": "tools",
-  "0": "draft-content",
-  "1": "stable-draft",
-  "2": "implemented",
-  "3": "stable"
+    "e": "editorial",
+    "a": "authors",
+    "c": "conformance-checkers",
+    "g": "gecko",
+    "i": "internet-explorer",
+    "o": "opera",
+    "w": "webkit",
+    "t": "tools",
+    "0": "draft-content",
+    "1": "stable-draft",
+    "2": "implemented",
+    "3": "stable"
 }
 
-def parseLogLine(line):
-  classes = []
-  if line.startswith("["):
-    for c in line:
-      if c in mapping:
-        classes.append(mapping[c])
-      if c == ")":
-        break
-    line = line.split(") ", 1)[-1] # any particular reason why this is -1?
-  return {"line": line, "classes": classes}
+# This function can probably be beautified
+def parseRawLog(svnLog):
+    """Parses a raw svn log.
+    
+    Returns a list with entries, each list item containing a dictionary with two
+    keys; info (string) and changes (list)
+    """
+    logList = cgi.escape(svnLog.read()).splitlines()
+    entries = []
+    current = 0
+    separator = "-" * 72
+    for i, line in enumerate(logList): 
+        if line != separator:
+            # After the separator comes the log info
+            if logList[i - 1] == separator:
+                entries.append({"info": line, "changes": []})
+            elif line:
+                entries[current]["changes"].append(line)
+            
+            # If next list item is a separator, there are no more changes
+            if logList[i + 1] == separator:
+                current += 1
+    return entries
 
 
-
-def filterLog(logList):
-  return [key for key in logList if key and key != "-" * 72]
-
+def parseLogLine(logInfo):
+    changes = []
+    classes = []
+    for line in logInfo:
+        if line.startswith("["):
+            for c in line:
+                if c in mapping:
+                    classes.append(mapping[c])
+                if c == ")":
+                    break
+            changes.append(line.split(") ", 1)[-1])
+        else:
+            changes.append(line)
+    return {"changes": changes, "classes": classes}
 
 
 def formatLog(logList):
-  logList = filterLog(logList)
-  output = ""
-  if logList:
-    output += "<ol id=\"log\">"
-    for line in range(0, len(logList) - 1, 2):
-      logInfo = parseLogLine(logList[line+1])
-      classInfo = ""
-      if logInfo["classes"]:
-        classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-      output += "\n   <li value=\"%s\"%s>%s</li>" % (getNumber(logList[line], 1), classInfo, logInfo["line"])
-    output += "\n  </ol>"
-  return output
-
+    output = ""
+    if logList:
+        output += "<ol id=\"log\">"
+        for entry in logList:
+            logInfo = parseLogLine(entry["changes"])
+            classInfo = ""
+            if logInfo["classes"]:
+                classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
+            output += "\n   <li value=\"%s\"%s>%s</li>" % (getNumber(entry["info"], 1), classInfo, "<br>".join(logInfo["changes"]))
+        output += "\n  </ol>"
+    return output
 
 
 def formatRichLog(logList):
-  logList = filterLog(logList)
-  output = ""
-  if logList:
-    output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
-    for line in range(0, len(logList) - 1, 2):
-      logInfo = parseLogLine(logList[line+1])
-      classInfo = ""
-      if logInfo["classes"]:
-        classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-      nr = getNumber(logList[line], 1)
-      link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
-      output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, logInfo["line"], getDate(logList[line]))
-    output += "\n  </table>"
-  return output
-
+    output = ""
+    if logList:
+        output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
+        for entry in logList:
+            logInfo = parseLogLine(entry["changes"])
+            classInfo = ""
+            if logInfo["classes"]:
+                classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
+            nr = getNumber(entry["info"], 1)
+            link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
+            output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
+        output += "\n  </table>"
+    return output
 
 
 def getNumber(s, n):
-  return re.split("\D+", s)[n]
-
+    return re.split("\D+", s)[n]
 
 
 def getDate(s):
-  date = re.split(" \(", re.split(" \| ", s)[2])[0]
-  return date[0:16] # Chops off seconds and time zone
+    date = re.split(" \(", re.split(" \| ", s)[2])[0]
+    return date[0:16] # Chops off seconds and time zone
 
 
-
-def getDiffCommand(rFrom, rTo=0):
-  command = "svn diff --old http://svn.whatwg.org/webapps/source%s --new http://svn.whatwg.org/webapps/source%s"
-  if rTo:
-    return command % ("@%s" % rFrom, "@%s" % rTo)
-  else:
-    return command % ("@%s" % rFrom, "")
-
+def getDiffCommand(source, revFrom, revTo=0):
+    command = "svn diff --old %s%s --new %s%s"
+    if revTo:
+        return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
+    else:
+        return command % (source, "@%s" % revFrom, source, "")
 
 
-def getLogCommand(rFrom, rTo):
-  rFrom += 1
-  return "svn log http://svn.whatwg.org/webapps/source -r %s:%s" % (rFrom, rTo)
-
+def getLogCommand(source, revFrom, revTo):
+    revFrom += 1
+    return "svn log %s -r %s:%s" % (source, revFrom, revTo)
 
 
 def toInt(s):
-  return int(float(s))
-
+    return int(float(s))
 
 
 def startFormatting():
-  # Handling incoming data.
-  showDiff = False
-  rFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
-  rTo = 0
-  os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
+    # Handling incoming data.
+    source = "http://svn.whatwg.org/webapps/source"
+    showDiff = False
+    revFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
+    revTo = 0
+    os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
 
-  form = cgi.FieldStorage()
+    form = cgi.FieldStorage()
 
-  if "from" in form:
-    try:
-      rFrom = toInt(form["from"].value)
-      showDiff = True
-    except:
-      pass
+    if "from" in form:
+        try:
+            revFrom = toInt(form["from"].value)
+            showDiff = True
+        except:
+            pass
 
-  if showDiff and "to" in form:
-    try:
-      rTo = toInt(form["to"].value)
-      if 0 < rTo < rFrom:
-        rFrom, rTo = rTo, rFrom
-    except:
-      pass
+    if showDiff and "to" in form:
+        try:
+            revTo = toInt(form["to"].value)
+            if 0 < revTo < revFrom:
+                revFrom, revTo = revTo, revFrom
+        except:
+            pass
 
-  if not showDiff:
-    log = formatRichLog(cgi.escape(os.popen("svn log http://svn.whatwg.org/webapps/source --limit 100").read()).splitlines())
-    #log = cgi.escape(os.popen("svn log --help").read())
-    print document % ("", "", log)
-  else:
-    diff = cgi.escape(os.popen(getDiffCommand(rFrom, rTo)).read())
-    if diff:
-      rTo = getNumber(diff, 2)
-      log = formatLog(cgi.escape(os.popen(getLogCommand(rFrom, rTo)).read()).splitlines())
-      result = """%s
-  <pre id="diff">%s</pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (log, diff, rTo)
-      print document % (rFrom, rTo, result)
+    if "source" in form:
+        source = form["source"].value
+
+    if not showDiff:
+        svnLog = os.popen("svn log %s --limit 100" % source)
+        parsedLog = parseRawLog(svnLog)
+        formattedLog = formatRichLog(parsedLog)
+        print document % ("", "", formattedLog)
     else:
-      print document % (rFrom, "", "No result.")
-
+        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
+        if diff:
+            revTo = getNumber(diff, 2)
+            svnLog = os.popen(getLogCommand(source, revFrom, revTo))
+            parsedLog = parseRawLog(svnLog)
+            formattedLog = formatLog(parsedLog)
+            result = """%s
+  <pre id="diff">%s</pre>
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (formattedLog, diff, revTo)
+            print document % (revFrom, revTo, result)
+        else:
+            print document % (revFrom, "", "No result.")
 
 
 document = """Content-Type:text/html;charset=UTF-8
@@ -316,6 +338,5 @@ document = """Content-Type:text/html;charset=UTF-8
 </html>"""
 
 
-
 if __name__ == "__main__":
-  startFormatting()
+    startFormatting()
