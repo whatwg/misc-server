@@ -73,7 +73,7 @@ def formatLog(logList):
             classInfo = ""
             if logInfo["classes"]:
                 classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-            icons = "".join([("<img src=\"icons/%s\" alt=\"\"> ") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
+            icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
             output += "\n   <li value=\"%s\"%s>%s%s</li>" % (getNumber(entry["info"], 1), classInfo, icons, "<br>".join(logInfo["changes"]))
         output += "\n  </ol>"
     return output
@@ -92,7 +92,7 @@ def formatRichLog(logList, source):
             link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
             if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
                 link += "&amp;source=%s" % source
-            icons = "".join([("<img src=\"icons/%s\" alt=\"\"> ") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
+            icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
             output += """\n   <tr%s><td>%s</td><td><a href="%s">%s%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, icons, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
         output += "\n  </table>"
     return output
