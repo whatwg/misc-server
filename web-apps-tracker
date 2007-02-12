@@ -101,17 +101,17 @@ def formatRichLog(logList, source):
 def formatDiff(diff):
     diff = diff.splitlines()
     diffList = []
-    formatting = """<span class="%s">%s</span>"""
+    formatting = """<span%s>%s</span>"""
 
     for line in diff:
         if line.startswith("@@"):
-            diffList.append(formatting % ("line-info", line))
+            diffList.append(formatting % (" class=\"line-info\"", line))
         elif line.startswith("+"):
-            diffList.append(formatting % ("addition", line))
+            diffList.append(formatting % (" class=\"addition\"", line))
         elif line.startswith("-"):
-            diffList.append(formatting % ("deletion", line))
+            diffList.append(formatting % (" class=\"deletion\"", line))
         else:
-            diffList.append(line)
+            diffList.append(formatting % ("", line))
 
     return "\n".join(diffList)
             
@@ -247,8 +247,8 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-2 li.implemented,
    .filter-3 li.stable { display:list-item; }
    
-   #diff { display: table }
-   #diff span { display: block; margin-bottom: -1em }
+   #diff { display: table; white-space: normal }
+   #diff span { display: block; white-space: pre }
    #diff .deletion { background: #fdd; color: #900 }
    #diff .addition { background: #dfd; color: #090 }
    #diff .line-info { background: #eee; color: #000 }
