@@ -73,7 +73,7 @@ def formatLog(logList):
             classInfo = ""
             if logInfo["classes"]:
                 classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-            icons = " ".join([("<img src=\"icons/%s\" alt=\"\">") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
+            icons = "".join([("<img src=\"icons/%s\" alt=\"\"> ") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
             output += "\n   <li value=\"%s\"%s>%s%s</li>" % (getNumber(entry["info"], 1), classInfo, icons, "<br>".join(logInfo["changes"]))
         output += "\n  </ol>"
     return output
@@ -92,7 +92,7 @@ def formatRichLog(logList, source):
             link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
             if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
                 link += "&amp;source=%s" % source
-            icons = " ".join([("<img src=\"icons/%s\" alt=\"\">") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
+            icons = "".join([("<img src=\"icons/%s\" alt=\"\"> ") % class_ for class_ in logInfo["classes"] if class_ in iconClasses])
             output += """\n   <tr%s><td>%s</td><td><a href="%s">%s%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, icons, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
         output += "\n  </table>"
     return output
@@ -203,7 +203,7 @@ document = """Content-Type:text/html;charset=UTF-8
    html { font:1em/1 Arial, sans-serif }
    form { margin:0 }
    form p { margin:.5em }
-   form label input { width:3em }
+   input#from, input#to { width:3em }
    table#log { border-collapse:collapse }
    table#log td { padding:.1em .5em }
    table#log td:first-child + td + td { white-space:nowrap }
@@ -323,13 +323,13 @@ document = """Content-Type:text/html;charset=UTF-8
      <label><input type=checkbox name=negfilter-e checked> Editorial</label>
     </p>
     <p>Affects:
-     <label><input type=checkbox name=filter-a checked> Authors</label>
-     <label><input type=checkbox name=filter-c checked> Conformance checkers</label>
-     <label><input type=checkbox name=filter-g checked> Gecko</label>
-     <label><input type=checkbox name=filter-i checked> Internet Explorer</label>
-     <label><input type=checkbox name=filter-o checked> Opera</label>
-     <label><input type=checkbox name=filter-w checked> WebKit</label>
-     <label><input type=checkbox name=filter-t checked> Tools</label>
+     <label><input type=checkbox name=filter-a checked> <img src="icons/authors" alt=""> Authors</label>
+     <label><input type=checkbox name=filter-c checked> <img src="icons/conformance-checkers" alt=""> Conformance checkers</label>
+     <label><input type=checkbox name=filter-g checked> <img src="icons/gecko" alt=""> Gecko</label>
+     <label><input type=checkbox name=filter-i checked> <img src="icons/internet-explorer" alt=""> Internet Explorer</label>
+     <label><input type=checkbox name=filter-o checked> <img src="icons/opera" alt=""> Opera</label>
+     <label><input type=checkbox name=filter-w checked> <img src="icons/webkit" alt=""> WebKit</label>
+     <label><input type=checkbox name=filter-t checked> <img src="icons/tools" alt=""> Tools</label>
     </p>
     <p>Stability:
      <label><input type=checkbox name=filter-0 checked> Draft content</label>
