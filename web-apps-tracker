@@ -216,6 +216,7 @@ document = """Content-Type:text/html;charset=UTF-8
 
    :link { background-color:transparent; color:#00f; }
    :visited { background-color:transparent; color:#066; }
+   img { border-style:none; vertical-align:middle; }
 
    td :link { color:inherit; }
    td a { text-decoration:none; display:block; }
