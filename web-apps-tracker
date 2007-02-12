@@ -200,7 +200,7 @@ document = """Content-Type:text/html;charset=UTF-8
   <meta name="robots" content="index, nofollow">
   <title>Web Applications 1.0 ((X)HTML5) Tracker</title>
   <style>
-   html { font:1em/1 Arial, sans-serif }
+   html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:0 }
    form p { margin:.5em }
    input#from, input#to { width:3em }
@@ -214,10 +214,12 @@ document = """Content-Type:text/html;charset=UTF-8
    .stable { background-color:#f66; }
    .editorial { color:gray; }
 
+   :link { background-color:transparent; color:#00f; }
+   :visited { background-color:transparent; color:#066; }
+
    td :link { color:inherit; }
-   td a { text-decoration:none; }
+   td a { text-decoration:none; display:block; }
    td a:hover { text-decoration:underline; }
-   td a { display:block; }
 
    /* filter */
    .hasjs tr[class], .hasjs li[class] { display:none; }
@@ -245,7 +247,8 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-2 li.implemented,
    .filter-3 li.stable { display:list-item; }
    
-   #diff { display: inline-block; }
+   #diff { display: table }
+   #diff span { display: block; margin-bottom: -1em }
    #diff .deletion { background: #fdd; color: #900 }
    #diff .addition { background: #dfd; color: #090 }
    #diff .line-info { background: #eee; color: #000 }
