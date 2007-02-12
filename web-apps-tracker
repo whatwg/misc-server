@@ -89,7 +89,7 @@ def formatRichLog(logList, source):
             link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
             if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
                 link += "&amp;source=%s" % source
-            output += """\n   <tr%s><td>%s</td><td><a href="%s">%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
+            output += """\n   <tr%s><td>%s</td><td><a href="%s">%s %s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, " ".join([("<img src=\"icons/%s\" alt=\"\">") % class_ for class_ in logInfo["classes"]]), "<br>".join(logInfo["changes"]), getDate(entry["info"]))
         output += "\n  </table>"
     return output
 
@@ -97,7 +97,7 @@ def formatRichLog(logList, source):
 def formatDiff(diff):
     diff = diff.splitlines()
     diffList = []
-    formatting = """<span class="%s">%s</span>"""
+    formatting = """<div class="%s">%s</div>"""
 
     for line in diff:
         if line.startswith("@@"):
@@ -205,7 +205,7 @@ document = """Content-Type:text/html;charset=UTF-8
    table#log td:first-child + td + td { white-space:nowrap }
 
    .draft-content { background-color:#eee; }
-   .stable-draft { background-color:#fcc; }
+   .stabe-draft { background-color:#fcc; }
    .implemented { background-color:#f99; }
    .stable { background-color:#f66; }
    .editorial { color:gray; }
@@ -216,15 +216,14 @@ document = """Content-Type:text/html;charset=UTF-8
    td a { display:block; }
 
    /* filter */
-   .hasjs tr[class], .hasjs li[class] { display:none; }
-   .negfilter-e .editorial { display:none !important; }
+   .hasjs tr[class] { display:none; }
+   .negfilter-e tr.editorial { display:none !important; }
    .filter-a tr.authors,
    .filter-c tr.conformance-checkers,
    .filter-g tr.gecko,
    .filter-i tr.internet-explorer,
    .filter-o tr.opera,
    .filter-w tr.webkit,
-   .filter-t tr.tools,
    .filter-0 tr.draft-content,
    .filter-1 tr.stable-draft,
    .filter-2 tr.implemented,
@@ -235,7 +234,6 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-i li.internet-explorer,
    .filter-o li.opera,
    .filter-w li.webkit,
-   .filter-t li.tools,
    .filter-0 li.draft-content,
    .filter-1 li.stable-draft,
    .filter-2 li.implemented,
@@ -281,7 +279,7 @@ document = """Content-Type:text/html;charset=UTF-8
       elm.className += " "+className;
     }
     function removeClass(elm, className) {
-     elm.className = elm.className.replace(new RegExp("(^|\\\s+)" + className + "($|\\\s+)", "g"), " ");
+     elm.className = elm.className.replace(new RegExp(className, "g"), "");
     }
     var form = document.forms[0];
     form.onchange = function(e) {
@@ -301,16 +299,31 @@ document = """Content-Type:text/html;charset=UTF-8
     }
     if(form["negfilter-e"].checked == false)
      document.body.className += "negfilter-e";
-    for(var i = 2, len = form.elements.length; i < len; ++i) {
-     var filter = form.elements[i];
-     if(filter.checked == false)
-      removeClass(document.body, filter.name);
-    }
+    if(form["filter-a"].checked == false)
+     removeClass(document.body, "filter-a");
+    if(form["filter-c"].checked == false)
+     removeClass(document.body, "filter-c");
+    if(form["filter-g"].checked == false)
+     removeClass(document.body, "filter-g");
+    if(form["filter-i"].checked == false)
+     removeClass(document.body, "filter-i");
+    if(form["filter-o"].checked == false)
+     removeClass(document.body, "filter-o");
+    if(form["filter-w"].checked == false)
+     removeClass(document.body, "filter-w");
+    if(form["filter-0"].checked == false)
+     removeClass(document.body, "filter-0");
+    if(form["filter-1"].checked == false)
+     removeClass(document.body, "filter-1");
+    if(form["filter-2"].checked == false)
+     removeClass(document.body, "filter-2");
+    if(form["filter-3"].checked == false)
+     removeClass(document.body, "filter-3");
     document.body.className += " hasjs";
    }
   </script>
  </head>
- <body class="filter-a filter-c filter-g filter-i filter-o filter-w filter-t filter-0 filter-1 filter-2 filter-3">
+ <body class="filter-a filter-c filter-g filter-i filter-o filter-w filter-0 filter-1 filter-2 filter-3">
   <h1>Web Applications 1.0 ((X)HTML5) Tracker</h1>
   <form>
    <fieldset>
@@ -325,7 +338,6 @@ document = """Content-Type:text/html;charset=UTF-8
      <label><input type=checkbox name=filter-i checked> Internet Explorer</label>
      <label><input type=checkbox name=filter-o checked> Opera</label>
      <label><input type=checkbox name=filter-w checked> WebKit</label>
-     <label><input type=checkbox name=filter-t checked> Tools</label>
     </p>
     <p>Stability:
      <label><input type=checkbox name=filter-0 checked> Draft content</label>
