@@ -1,8 +1,5 @@
 <Files web-apps-tracker>
  SetHandler cgi-script
 </Files>
-<Directory icons>
- DefaultType image/png
-</Directory>
 Redirect 410 /tools/parser-tracker
 Redirect 301 /tools/specification-diff http://html5.org/tools/web-apps-tracker
