@@ -251,7 +251,7 @@ document = """Content-Type:text/html;charset=UTF-8
    #diff { display: table; white-space: normal }
    #diff span { display: block; white-space: pre }
    #diff .deletion { background: #fdd; color: #900 }
-   #diff .addition { background: #dfd; color: #090 }
+   #diff .addition { background: #dfd; color: #000 }
    #diff .line-info { background: #eee; color: #000 }
  </style>
   <script>
