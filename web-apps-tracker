@@ -324,7 +324,7 @@ document = """Content-Type:text/html;charset=UTF-8
    <fieldset>
     <legend>Filter</legend>
     <p>Type:
-     <label><input type=checkbox name=negfilter-e checked> Editorial</label>
+     <label class=editorial><input type=checkbox name=negfilter-e checked> Editorial</label>
     </p>
     <p>Affects:
      <label><input type=checkbox name=filter-a checked> <img src="icons/authors" alt=""> Authors</label>
@@ -336,10 +336,10 @@ document = """Content-Type:text/html;charset=UTF-8
      <label><input type=checkbox name=filter-t checked> <img src="icons/tools" alt=""> Tools</label>
     </p>
     <p>Stability:
-     <label><input type=checkbox name=filter-0 checked> Draft content</label>
-     <label><input type=checkbox name=filter-1 checked> Stable draft</label>
-     <label><input type=checkbox name=filter-2 checked> Implemented</label>
-     <label><input type=checkbox name=filter-3 checked> Stable</label>
+     <label class=draft-content><input type=checkbox name=filter-0 checked> Draft content</label>
+     <label class=stable-draft><input type=checkbox name=filter-1 checked> Stable draft</label>
+     <label class=implemented><input type=checkbox name=filter-2 checked> Implemented</label>
+     <label class=stable><input type=checkbox name=filter-3 checked> Stable</label>
     </p>
    </fieldset>
   </form>
