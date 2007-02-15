@@ -224,7 +224,8 @@ document = """Content-Type:text/html;charset=UTF-8
 
    /* filter */
    .hasjs tr[class], .hasjs li[class] { display:none; }
-   .negfilter-e .editorial { display:none !important; }
+   .negfilter-e tr.editorial,
+   .negfilter-e li.editorial { display:none !important; }
    .filter-a tr.authors,
    .filter-c tr.conformance-checkers,
    .filter-g tr.gecko,
