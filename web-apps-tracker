@@ -59,7 +59,7 @@ def parseLogLine(logInfo):
                 if c in mapping:
                     classes.append(mapping[c])
                 if c == "]":
-                    if (not classes) or (len(classes) == 1 && classes[0] == 'editorial'):
+                    if (not classes) or (len(classes) == 1 and classes[0] == 'editorial'):
                         classes.append('none')
                 if c == ")":
                     break
