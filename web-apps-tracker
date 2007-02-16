@@ -240,6 +240,7 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-o tr.opera,
    .filter-w tr.webkit,
    .filter-t tr.tools,
+   .filter-none tr.none,
    .filter-0 tr.draft-content,
    .filter-1 tr.stable-draft,
    .filter-2 tr.implemented,
@@ -251,6 +252,7 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-o li.opera,
    .filter-w li.webkit,
    .filter-t li.tools,
+   .filter-none li.none,
    .filter-0 li.draft-content,
    .filter-1 li.stable-draft,
    .filter-2 li.implemented,
@@ -331,9 +333,6 @@ document = """Content-Type:text/html;charset=UTF-8
   <form>
    <fieldset>
     <legend>Filter</legend>
-    <p>Type:
-     <label class=editorial><input type=checkbox name=negfilter-e checked> Editorial</label>
-    </p>
     <p>Affects:
      <label><input type=checkbox name=filter-a checked> <img src="icons/authors" alt=""> Authors</label>
      <label><input type=checkbox name=filter-c checked> <img src="icons/conformance-checkers" alt=""> Conformance checkers</label>
@@ -342,12 +341,14 @@ document = """Content-Type:text/html;charset=UTF-8
      <label><input type=checkbox name=filter-o checked> <img src="icons/opera" alt=""> Opera</label>
      <label><input type=checkbox name=filter-w checked> <img src="icons/webkit" alt=""> WebKit</label>
      <label><input type=checkbox name=filter-t checked> <img src="icons/tools" alt=""> Tools</label>
+     <label><input type=checkbox name=filter-none checked> <img src="icons/none" alt=""> None</label>
     </p>
     <p>Stability:
      <label class=draft-content><input type=checkbox name=filter-0 checked> Draft content</label>
      <label class=stable-draft><input type=checkbox name=filter-1 checked> Stable draft</label>
      <label class=implemented><input type=checkbox name=filter-2 checked> Implemented</label>
      <label class=stable><input type=checkbox name=filter-3 checked> Stable</label>
+     <label class=editorial><input type=checkbox name=negfilter-e checked> Show editorial changes</label>
     </p>
    </fieldset>
   </form>
