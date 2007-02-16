@@ -341,7 +341,7 @@ document = """Content-Type:text/html;charset=UTF-8
      <label><input type=checkbox name=filter-o checked> <img src="icons/opera" alt=""> Opera</label>
      <label><input type=checkbox name=filter-w checked> <img src="icons/webkit" alt=""> WebKit</label>
      <label><input type=checkbox name=filter-t checked> <img src="icons/tools" alt=""> Tools</label>
-     <label><input type=checkbox name=filter-none checked> <img alt=""> None</label>
+     <label><input type=checkbox name=filter-none checked> None</label>
     </p>
     <p>Stability:
      <label class=draft-content><input type=checkbox name=filter-0 checked> Draft content</label>
