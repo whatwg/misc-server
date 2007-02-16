@@ -23,6 +23,8 @@ mapping = {
 
 iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools"]
 
+titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
+
 # This function can probably be beautified
 def parseRawLog(svnLog):
     """Parses a raw svn log.
@@ -73,8 +75,9 @@ def formatLog(logList):
             classInfo = ""
             if logInfo["classes"]:
                 classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
+            titleInfo = " title=\"%s\"" % (", ".join([("%s") % (title_.replace("-", " ").title()) for title_ in logInfo["classes"] if title_ in titleClasses])
             icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
-            output += "\n   <li value=\"%s\"%s>%s%s</li>" % (getNumber(entry["info"], 1), classInfo, icons, "<br>".join(logInfo["changes"]))
+            output += "\n   <li value=\"%s\"%s%s>%s%s</li>" % (getNumber(entry["info"], 1), classInfo, titleInfo, icons, "<br>".join(logInfo["changes"]))
         output += "\n  </ol>"
     return output
 
@@ -92,8 +95,9 @@ def formatRichLog(logList, source):
             link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
             if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
                 link += "&amp;source=%s" % source
+            titleInfo = " title=\"%s\"" % (", ".join([("%s") % (title_.replace("-", " ").title()) for title_ in logInfo["classes"] if title_ in titleClasses])
             icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
-            output += """\n   <tr%s><td>%s</td><td><a href="%s">%s%s</a></td><td>%s</td></tr>""" % (classInfo, nr, link, icons, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
+            output += """\n   <tr%s%s><td>%s</td><td><a href="%s">%s%s</a></td><td>%s</td></tr>""" % (classInfo, titleInfo, nr, link, icons, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
         output += "\n  </table>"
     return output
 
