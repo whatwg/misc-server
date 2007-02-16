@@ -7,6 +7,7 @@ import re
 import time
 
 mapping = {
+    "": "none",
     "e": "editorial",
     "a": "authors",
     "c": "conformance-checkers",
@@ -58,6 +59,9 @@ def parseLogLine(logInfo):
             for c in line:
                 if c in mapping:
                     classes.append(mapping[c])
+                if c == "]":
+                    if len(classes) == 0:
+                        classes.append(mapping[''])
                 if c == ")":
                     break
             changes.append(line.split(") ", 1)[-1])
