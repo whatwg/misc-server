@@ -137,7 +137,7 @@ def formatDiff(diff):
     diffList = []
 
     def formatLine(line):
-        format = "<samp class=\"%s\">%s</samo>"
+        format = "<samp class=\"%s\">%s</samp>"
         formattingTypes = {"+": "addition", "-": "deletion", "@": "line-info"}
         diffType = line[0]
         if diffType in list(formattingTypes):
@@ -286,7 +286,7 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-3 li.stable { display:list-item; }
    
    #diff { display: table; white-space: normal }
-   #diff span { display: block; white-space: pre }
+   #diff samp { display: block; white-space: pre }
    #diff .deletion { background: #fdd; color: #900 }
    #diff .addition { background: #dfd; color: #000 }
    #diff .line-info { background: #eee; color: #000 }
