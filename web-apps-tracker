@@ -4,7 +4,6 @@
 import os
 import cgi
 import re
-import time
 
 mapping = {
     "e": "editorial",
@@ -115,13 +114,13 @@ def formatLog(logList):
 def formatRichLog(logList):
     output = ""
     if logList:
-        output += """<table id="log">\n   <tr>""" \
+        output += "<table id=\"log\">\n   <tr>" \
             "<th><abbr title=\"Revision\">R</abbr></th>" \
             "<th>Comment</th>" \
             "<th>Time (UTC)</th></tr>"
         for revision in logList:
             revData = getRevisionData(revision)
-            output += """\n   <tr%(classAttr)s%(titleAttr)s>""" \
+            output += "\n   <tr%(classAttr)s%(titleAttr)s>" \
                 "<td>%(number)s</td>" \
                 "<td><a href=\"%(link)s\">%(icons)s%(changes)s</a></td>" \
                 "<td>%(date)s</td></tr>" % revData
@@ -130,23 +129,27 @@ def formatRichLog(logList):
 
 
 def formatDiff(diff):
+    """Takes a svn diff and marks it up with elements for styling purposes
+    
+    Returns a formatted diff
+    """
     diff = diff.splitlines()
     diffList = []
-    formatting = """<span%s>%s</span>"""
+
+    def formatLine(line):
+        format = "<samp class=\"%s\">%s</samo>"
+        formattingTypes = {"+": "addition", "-": "deletion", "@": "line-info"}
+        diffType = line[0]
+        if diffType in list(formattingTypes):
+            diffList.append(format % (formattingTypes[diffType], line))
+        else:
+            diffList.append("<samp>%s</samp>" % line)
 
     for line in diff:
-        if line.startswith("@"):
-            diffList.append(formatting % (" class=\"line-info\"", line))
-        elif line.startswith("+"):
-            diffList.append(formatting % (" class=\"addition\"", line))
-        elif line.startswith("-"):
-            diffList.append(formatting % (" class=\"deletion\"", line))
-        else:
-            diffList.append(formatting % ("", line))
+        formatLine(line)
 
     return "\n".join(diffList)
             
-
 
 def getNumber(s, n):
     return re.split("\D+", s)[n]
@@ -216,7 +219,7 @@ def startFormatting():
             parsedLog = parseRawLog(svnLog)
             formattedLog = formatLog(parsedLog)
             result = """%s
-  <pre id="diff">%s</pre>
+  <pre id="diff"><samp>%s</samp></pre>
   <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (formattedLog, formattedDiff, revTo)
             print document % (revFrom, revTo, result)
         else:
@@ -378,6 +381,7 @@ document = """Content-Type:text/html;charset=UTF-8
   </form>
   <form>
    <fieldset>
+    <legend>Revision</legend>
     <p>
      <label>From: <input id="from" type="number" min="1" value="%s" name="from" required="required"></label>
      <label>To: <input id="to" type="number" min="0" value="%s" name="to"></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)</p>
