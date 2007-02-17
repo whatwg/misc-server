@@ -5,31 +5,12 @@ import os
 import cgi
 import re
 
-mapping = {
-    "e": "editorial",
-    "a": "authors",
-    "c": "conformance-checkers",
-    "g": "gecko",
-    "i": "internet-explorer",
-    "o": "opera",
-    "w": "webkit",
-    "t": "tools",
-    "0": "draft-content",
-    "1": "stable-draft",
-    "2": "implemented",
-    "3": "stable"
-}
-
-iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools"]
-
-titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
-
 # This function can probably be beautified
 def parseRawLog(svnLog):
     """Parses a raw svn log.
     
-    Returns a list with entries, each list item containing a dictionary with two
-    keys; info (string) and changes (list)
+    Returns a list with entries, each list item containing a dictionary with
+    two keys; info (string) and changes (list)
     """
     logList = cgi.escape(svnLog.read()).splitlines()
     entries = []
@@ -50,6 +31,10 @@ def parseRawLog(svnLog):
 
 
 def parseLogLine(logInfo):
+    mapping = {"e": "editorial", "a": "authors", "c": "conformance-checkers",
+        "g": "gecko", "i": "internet-explorer", "o": "opera", "w": "webkit",
+        "t": "tools", "0": "draft-content", "1": "stable-draft",
+        "2": "implemented", "3": "stable"}
     changes = []
     classes = []
     for line in logInfo:
@@ -71,22 +56,23 @@ def parseLogLine(logInfo):
 def getRevisionData(revision):
     revInfo = revision["info"] # This is the info line for a revision
     revChanges = parseLogLine(revision["changes"]) # Changes for the revision
+    
+    iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools"]
+    titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
 
     # Get stuff from the info line
     number = getNumber(revInfo, 1)
     date = getDate(revInfo)
 
     # Get stuff from the changes line(s)
-    # TODO: fix the classInfo and titleInfo to only return if non-empty
+    # TODO: fix the classAttr and titleAttr to only return if non-empty
     classAttr = " class=\"%s\"" % " ".join(revChanges["classes"])
     titleAttr = " title=\"%s\"" % ", ".join([title.replace("-", " ").title() for title in revChanges["classes"] if title in titleClasses])
     icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in revChanges["classes"] if class_ in iconClasses])
     changes = "<br>".join(revChanges["changes"])
 
+    # TODO: Implement the source stuff to work with links
     link = "?from=%s&amp;to=%s" % (str(toInt(number) - 1), number)
-    # TODO: Implement this source stuff
-    #if source is not "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
-    #    link += "&amp;source=%s" % source
 
     return {
         "number": number,
