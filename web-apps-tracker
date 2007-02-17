@@ -31,10 +31,20 @@ def parseRawLog(svnLog):
 
 
 def parseLogLine(logInfo):
-    mapping = {"e": "editorial", "a": "authors", "c": "conformance-checkers",
-        "g": "gecko", "i": "internet-explorer", "o": "opera", "w": "webkit",
-        "t": "tools", "0": "draft-content", "1": "stable-draft",
-        "2": "implemented", "3": "stable"}
+    mapping = {
+        "e": "editorial",
+        "a": "authors",
+        "c": "conformance-checkers",
+        "g": "gecko",
+        "i": "internet-explorer",
+        "o": "opera",
+        "w": "webkit",
+        "t": "tools",
+        "0": "draft-content",
+        "1": "stable-draft",
+        "2": "implemented",
+        "3": "stable"
+        }
     changes = []
     classes = []
     for line in logInfo:
@@ -43,7 +53,7 @@ def parseLogLine(logInfo):
                 if c in mapping:
                     classes.append(mapping[c])
                 if c == "]":
-                    if (not classes) or (len(classes) == 1 and classes[0] == 'editorial'):
+                    if (not classes) or (len(classes) == 1 and classes[0] == "editorial"):
                         classes.append("none")
                 if c == ")":
                     break
@@ -56,13 +66,14 @@ def parseLogLine(logInfo):
 def getRevisionData(revision):
     revInfo = revision["info"] # This is the info line for a revision
     revChanges = parseLogLine(revision["changes"]) # Changes for the revision
-    
+
     iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools"]
     titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
 
-    # Get stuff from the info line
+    # Get the revision number
     number = getNumber(revInfo, 1)
-    date = getDate(revInfo)
+    # Get the revision date and chop off the seconds and time zone
+    date = re.split(" \(", re.split(" \| ", revInfo)[2])[0][:16]
 
     # Get stuff from the changes line(s)
     # TODO: fix the classAttr and titleAttr to only return if non-empty
@@ -82,7 +93,7 @@ def getRevisionData(revision):
         "icons": icons,
         "changes": changes,
         "date": date
-    }
+        }
 
 
 def formatLog(logList):
@@ -141,36 +152,16 @@ def getNumber(s, n):
     return re.split("\D+", s)[n]
 
 
-def getDate(s):
-    date = re.split(" \(", re.split(" \| ", s)[2])[0]
-    return date[:16] # Chops off seconds and time zone
-
-
-def getDiffCommand(source, revFrom, revTo=0):
-    command = "svn diff --old %s%s --new %s%s"
-    if revTo:
-        return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
-    else:
-        return command % (source, "@%s" % revFrom, source, "")
-
-
-def getLogCommand(source, revFrom, revTo):
-    revFrom += 1
-    return "svn log %s -r %s:%s" % (source, revFrom, revTo)
-
-
 def toInt(s):
     return int(float(s))
 
 
 def startFormatting():
-    # Handling incoming data.
     source = "http://svn.whatwg.org/webapps/source"
     showDiff = False
     revFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
     revTo = 0
     os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
-
     form = cgi.FieldStorage()
 
     if "from" in form:
@@ -190,6 +181,19 @@ def startFormatting():
 
     if "source" in form:
         source = form["source"].value
+
+    def getDiffCommand(source, revFrom, revTo=0):
+        command = "svn diff --old %s%s --new %s%s"
+        if revTo:
+            return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
+        else:
+            return command % (source, "@%s" % revFrom, source, "")
+
+
+    def getLogCommand(source, revFrom, revTo):
+        revFrom += 1
+        return "svn log %s -r %s:%s" % (source, revFrom, revTo)
+
 
     if not showDiff:
         svnLog = os.popen("svn log %s --limit 100" % source)
