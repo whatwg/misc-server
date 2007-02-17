@@ -69,38 +69,59 @@ def parseLogLine(logInfo):
     return {"changes": changes, "classes": classes}
 
 
+def getRevisionData(revision):
+    revInfo = revision["info"] # This is the info line for a revision
+    revChanges = parseLogLine(revision["changes"]) # Changes for the revision
+
+    # Get stuff from the info line
+    number = getNumber(revInfo, 1)
+    date = getDate(revInfo)
+
+    # Get stuff from the changes line(s)
+    # TODO: fix the classInfo and titleInfo to only return if non-empty
+    classAttr = " class=\"%s\"" % " ".join(revChanges["classes"])
+    titleAttr = " title=\"%s\"" % ", ".join([title.replace("-", " ").title() for title in revChanges["classes"] if title in titleClasses])
+    icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in revChanges["classes"] if class_ in iconClasses])
+    changes = "<br>".join(revChanges["changes"])
+
+    link = "?from=%s&amp;to=%s" % (str(toInt(number) - 1), number)
+    # TODO: Implement this source stuff
+    #if source is not "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
+    #    link += "&amp;source=%s" % source
+
+    return {
+        "number": number,
+        "link": link,
+        "classAttr": classAttr,
+        "titleAttr": titleAttr,
+        "icons": icons,
+        "changes": changes,
+        "date": date
+    }
+
+
 def formatLog(logList):
     output = ""
     if logList:
         output += "<ol id=\"log\">"
-        for entry in logList:
-            logInfo = parseLogLine(entry["changes"])
-            classInfo = ""
-            if logInfo["classes"]:
-                classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-            titleInfo = " title=\"%s\"" % ", ".join([("%s") % (title_.replace("-", " ").title()) for title_ in logInfo["classes"] if title_ in titleClasses])
-            icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
-            output += "\n   <li value=\"%s\"%s%s>%s%s</li>" % (getNumber(entry["info"], 1), classInfo, titleInfo, icons, "<br>".join(logInfo["changes"]))
+        for revision in logList:
+            revData = getRevisionData(revision)
+            output += "\n   <li value=\"%(number)s\"%(classAttr)s" \
+                "%(titleAttr)s>%(icons)s%(changes)s</li>" % revData
         output += "\n  </ol>"
     return output
 
 
-def formatRichLog(logList, source):
+def formatRichLog(logList):
     output = ""
     if logList:
-        output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr></th><th>Comment</th><th>Time (UTC)</th></tr>"
-        for entry in logList:
-            logInfo = parseLogLine(entry["changes"])
-            classInfo = ""
-            if logInfo["classes"]:
-                classInfo = " class=\"%s\"" % " ".join(logInfo["classes"])
-            nr = getNumber(entry["info"], 1)
-            link = "?from=%s&amp;to=%s" % (str(toInt(nr) - 1), nr)
-            if source != "http://svn.whatwg.org/webapps/source": # Shouldn't be hardcoded
-                link += "&amp;source=%s" % source
-            titleInfo = " title=\"%s\"" % ", ".join([("%s") % (title_.replace("-", " ").title()) for title_ in logInfo["classes"] if title_ in titleClasses])
-            icons = "".join([("<img src=\"icons/%s\" alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in logInfo["classes"] if class_ in iconClasses])
-            output += """\n   <tr%s%s><td>%s</td><td><a href="%s">%s%s</a></td><td>%s</td></tr>""" % (classInfo, titleInfo, nr, link, icons, "<br>".join(logInfo["changes"]), getDate(entry["info"]))
+        output += "<table id=\"log\">\n   <tr><th><abbr title=\"Revision\">R</abbr>" \
+            "</th><th>Comment</th><th>Time (UTC)</th></tr>"
+        for revision in logList:
+            revData = getRevisionData(revision)
+            output += """\n   <tr%(classAttr)s%(titleAttr)s><td>%(number)s""" \
+                "</td><td><a href=\"%(link)s\">%(icons)s%(changes)s" \
+                "</a></td><td>%(date)s</td></tr>" % revData
         output += "\n  </table>"
     return output
 
