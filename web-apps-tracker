@@ -286,7 +286,7 @@ document = """Content-Type:text/html;charset=UTF-8
    .filter-3 li.stable { display:list-item; }
    
    #diff { display: table; white-space: normal }
-   #diff samp { display: block; white-space: pre }
+   #diff samp samp { display: block; white-space: pre; margin: 0 }
    #diff .deletion { background: #fdd; color: #900 }
    #diff .addition { background: #dfd; color: #000 }
    #diff .line-info { background: #eee; color: #000 }
