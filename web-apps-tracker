@@ -345,7 +345,7 @@ document = """Content-Type:text/html;charset=UTF-8
    }
   </script>
  </head>
- <body class="filter-a filter-c filter-g filter-i filter-o filter-w filter-t filter-0 filter-1 filter-2 filter-3">
+ <body class="filter-a filter-c filter-g filter-i filter-o filter-w filter-t filter-none filter-0 filter-1 filter-2 filter-3">
   <h1>Web Applications 1.0 ((X)HTML5) Tracker</h1>
   <form>
    <fieldset>
