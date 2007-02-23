@@ -236,7 +236,7 @@ document = """Content-Type:text/html;charset=UTF-8
    .stable-draft { background-color:#fcc; }
    .implemented { background-color:#f99; }
    .stable { background-color:#f66; }
-   .editorial { color:gray; }
+   body .editorial { color:gray; }
 
    :link { background-color:transparent; color:#00f; }
    :visited { background-color:transparent; color:#066; }
