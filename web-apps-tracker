@@ -312,7 +312,13 @@ document = """Content-Type:text/html;charset=UTF-8
    window.onload = function() {
     var form = document.forms[0];
     var log = document.getElementById("log");
-    var rows = log.tagName == "TABLE" ? log.getElementsByTagName("tr") : log.getElementsByTagName("li");
+    if (log.tagName == "TABLE") {
+     var rows = log.getElementsByTagName("tr");
+     var firstRow = 1;
+    } else {
+     var rows = log.getElementsByTagName("li");
+     var firstRow = 0;
+    }
     var rowsLen = rows.length;
     
     // make sure all checkboxes are checked (in case of reload)
@@ -328,7 +334,7 @@ document = """Content-Type:text/html;charset=UTF-8
     function updateTable() {
      var affectsLen = affects.length;
      var stabilityLen = stability.length;
-     for (var i = 1; i < rowsLen; ++i) {
+     for (var i = firstRow; i < rowsLen; ++i) {
       var affectMatches = false;
       var stabilityMatches = false;
       var row = rows[i];
