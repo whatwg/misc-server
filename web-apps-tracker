@@ -183,7 +183,7 @@ def startFormatting():
         source = form["source"].value
 
     def getDiffCommand(source, revFrom, revTo=0):
-        command = "svn diff --old %s%s --new %s%s"
+        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up20"
         if revTo:
             return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
         else:
@@ -222,7 +222,7 @@ document = """Content-Type:text/html;charset=UTF-8
 <html lang="en">
  <head>
   <meta name="robots" content="index, nofollow">
-  <title>Web Applications 1.0 ((X)HTML5) Tracker</title>
+  <title>(X)HTML5 Tracking</title>
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:0 }
@@ -375,7 +375,7 @@ document = """Content-Type:text/html;charset=UTF-8
   </script>
  </head>
  <body>
-  <h1>Web Applications 1.0 ((X)HTML5) Tracker</h1>
+  <h1>(X)HTML5 Tracking</h1>
   <form>
    <fieldset>
     <legend>Filter</legend>
