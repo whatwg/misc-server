@@ -183,7 +183,7 @@ def startFormatting():
         source = form["source"].value
 
     def getDiffCommand(source, revFrom, revTo=0):
-        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up20"
+        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up10"
         if revTo:
             return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
         else:
