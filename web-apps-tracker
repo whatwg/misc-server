@@ -227,7 +227,6 @@ document = """Content-Type:text/html;charset=UTF-8
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:0 }
    form p { margin:.5em }
-   input#from, input#to { width:3em }
    table#log { border-collapse:collapse }
    table#log td { padding:.1em .5em }
    table#log td:first-child + td + td { white-space:nowrap }
@@ -402,8 +401,8 @@ document = """Content-Type:text/html;charset=UTF-8
    <fieldset>
     <legend>Revision</legend>
     <p>
-     <label>From: <input id="from" type="number" min="1" value="%s" name="from" required="required"></label>
-     <label>To: <input id="to" type="number" min="0" value="%s" name="to"></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)</p>
+     <label>From: <input id=from type=number size=5 min=1 value=%s name=from required></label>
+     <label>To: <input id=to type=number size=5 min=0 value=%s name=to></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)</p>
     <p><input type="submit" value="Generate diff"></p>
    </fieldset>
   </form>
