@@ -195,8 +195,17 @@ def startFormatting():
         return "svn log %s -r %s:%s" % (source, revFrom, revTo)
 
 
+    # Put it on the screen
     if not showDiff:
-        svnLog = os.popen("svn log %s --limit 100" % source)
+        if "limit" in form and form["limit"].value == "-1":
+            limit = ""
+        else:
+            limit = " --limit 100"
+            try:
+                limit = " --limit %s" % toInt(form["limit"].value)
+            except:
+                pass
+        svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
         formattedLog = formatRichLog(parsedLog)
         print document % ("", "", formattedLog)
