@@ -239,6 +239,7 @@ document = """Content-Type:text/html;charset=UTF-8
    table#log { border-collapse:collapse }
    table#log td { padding:.1em .5em }
    table#log td:first-child + td + td { white-space:nowrap }
+   img { font-size:xx-small }
 
    .draft-content { background-color:#eee; }
    .stable-draft { background-color:#fcc; }
