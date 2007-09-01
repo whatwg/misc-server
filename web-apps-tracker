@@ -137,7 +137,7 @@ def formatDiff(diff):
         format = "<samp class=\"%s\">%s</samp>"
         formattingTypes = {"+": "addition", "-": "deletion", "@": "line-info"}
         diffType = line[0]
-        if diffType in list(formattingTypes):
+        if diffType in formattingTypes.keys():
             diffList.append(format % (formattingTypes[diffType], line))
         else:
             diffList.append("<samp>%s</samp>" % line)
