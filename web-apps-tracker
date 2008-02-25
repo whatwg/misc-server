@@ -39,6 +39,7 @@ def parseLogLine(logInfo):
         "i": "internet-explorer",
         "o": "opera",
         "w": "webkit",
+        "r": "google-gears",
         "t": "tools",
         "0": "draft-content",
         "1": "stable-draft",
@@ -67,7 +68,7 @@ def getRevisionData(revision):
     revInfo = revision["info"] # This is the info line for a revision
     revChanges = parseLogLine(revision["changes"]) # Changes for the revision
 
-    iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools"]
+    iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools"]
     titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
 
     # Get the revision number
@@ -316,7 +317,7 @@ document = """Content-Type:text/html;charset=UTF-8
    function removeClass(elm, className) {
     elm.className = elm.className.replace(new RegExp("(^|\\\s+)" + className + "($|\\\s+)", "g"), " ");
    }
-   var affects = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "tools", "none"];
+   var affects = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools", "none"];
    var stability = ["draft-content", "stable-draft", "implemented", "stable"]; // not editorial
    window.onload = function() {
     var form = document.forms[0];
@@ -390,11 +391,12 @@ document = """Content-Type:text/html;charset=UTF-8
     <legend>Filter</legend>
     <p>Affects:
      <label><input type=checkbox name=affects_authors checked> <img src="icons/authors" alt=""> Authors</label>
-     <label><input type=checkbox name=affects_conformance-checkers checked> <img src="icons/conformance-checkers" alt=""> Conformance checkers</label>
+     <label><input type=checkbox name=affects_conformance-checkers checked> <img src="icons/conformance-checkers" alt=""> Validators</label>
      <label><input type=checkbox name=affects_gecko checked> <img src="icons/gecko" alt=""> Gecko</label>
-     <label><input type=checkbox name=affects_internet-explorer checked> <img src="icons/internet-explorer" alt=""> Internet Explorer</label>
+     <label><input type=checkbox name=affects_internet-explorer checked> <img src="icons/internet-explorer" alt=""> IE</label>
      <label><input type=checkbox name=affects_opera checked> <img src="icons/opera" alt=""> Opera</label>
      <label><input type=checkbox name=affects_webkit checked> <img src="icons/webkit" alt=""> WebKit</label>
+     <label><input type=checkbox name=affects_google-gears checked> <img src="icons/google-gears" alt=""> Gears</label>
      <label><input type=checkbox name=affects_tools checked> <img src="icons/tools" alt=""> Tools</label>
      <label><input type=checkbox name=affects_none checked> None</label>
     </p>
