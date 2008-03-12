@@ -162,6 +162,7 @@ def startFormatting():
     showDiff = False
     revFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
     revTo = 0
+    context = 10
     os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
     form = cgi.FieldStorage()
 
@@ -180,15 +181,23 @@ def startFormatting():
         except:
             pass
 
+    if "context" in form:
+        try:
+            context = toInt(form["context"].value)
+            if context < 10:
+                context = 10
+        except:
+            pass
+
     if "source" in form:
         source = form["source"].value
 
-    def getDiffCommand(source, revFrom, revTo=0):
-        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up10"
+    def getDiffCommand(source, revFrom, revTo, context):
+        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up%s"
         if revTo:
-            return command % (source, "@%s" % revFrom, source, "@%s" % revTo)
+            return command % (source, "@%s" % revFrom, source, "@%s" % revTo, context)
         else:
-            return command % (source, "@%s" % revFrom, source, "")
+            return command % (source, "@%s" % revFrom, source, "", context)
 
 
     def getLogCommand(source, revFrom, revTo):
@@ -209,9 +218,9 @@ def startFormatting():
         svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
         formattedLog = formatRichLog(parsedLog)
-        print document % ("", "", formattedLog)
+        print document % ("", "", "", formattedLog)
     else:
-        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
+        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
         formattedDiff = formatDiff(diff)
         if diff:
             revTo = getNumber(diff, 2)
@@ -220,10 +229,10 @@ def startFormatting():
             formattedLog = formatLog(parsedLog)
             result = """%s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s)">""" % (formattedLog, formattedDiff, revTo)
-            print document % (revFrom, revTo, result)
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s);setContext(getFieldValue('context'))">""" % (formattedLog, formattedDiff, revTo)
+            print document % (revFrom, revTo, context, result)
         else:
-            print document % (revFrom, "", "No result.")
+            print document % (revFrom, "", context, "No result.")
 
 
 document = """Content-Type:text/html;charset=UTF-8
@@ -295,6 +304,10 @@ document = """Content-Type:text/html;charset=UTF-8
     createCookie('from', n, 30)
     setFieldValue('from', n)
     setFieldValue('to', '')
+   }
+   function setContext(n) {
+    createCookie('context', n, 30)
+    setFieldValue('context', n)
    }
 
    // for pre javascript 1.6 browsers
@@ -414,13 +427,17 @@ document = """Content-Type:text/html;charset=UTF-8
     <legend>Revision</legend>
     <p>
      <label>From: <input id=from type=number size=5 min=1 value="%s" name=from required></label>
-     <label>To: <input id=to type=number size=5 min=0 value="%s" name=to></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)</p>
+     <label>To: <input id=to type=number size=5 min=0 value="%s" name=to></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)
+     <label>Context: <input type=number step=10 size=5 min=10 value="%s" name=context></label>
+    </p>
     <p><input type="submit" value="Generate diff"></p>
    </fieldset>
   </form>
   <script>
    if(getFieldValue('from') == "" && readCookie('from') != null)
     setFrom(readCookie('from'))
+   if(getFieldValue('context') == "" && readCookie('context') != null)
+    setContext(readCookie('context'))
   </script>
   <hr>
   %s
