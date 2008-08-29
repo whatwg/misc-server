@@ -2,4 +2,4 @@
 import trackerlib
 
 if __name__ == "__main__":
-    trackerlib.startFormatting("Web Workers", "http://svn.whatwg.org/webworkers/source")
+    trackerlib.startFormatting("Web Workers", "ww", "http://svn.whatwg.org/webworkers/source")

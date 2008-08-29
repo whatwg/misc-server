@@ -155,7 +155,7 @@ def toInt(s):
     return int(float(s))
 
 
-def startFormatting(title, source):
+def startFormatting(title, identifier, source):
     document = """Content-Type:text/html;charset=UTF-8
 
 <!doctype html>
@@ -205,10 +205,10 @@ def startFormatting(title, source):
      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
      expires = "; expires=" + date.toGMTString()
     }
-    document.cookie = name+"="+value+expires+"; path=/"
+    document.cookie = "%s"+name+"="+value+expires+"; path=/"
    }
    function readCookie(name) {
-    name += "="
+    name = "%s"+name+"="
     var ca = document.cookie.split(';')
     for(var i=0; i < ca.length; i++) {
      var c = ca[i]
@@ -423,7 +423,7 @@ def startFormatting(title, source):
         svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
         formattedLog = formatRichLog(parsedLog)
-        print document % (title, title, "", "", "", formattedLog)
+        print document % (title, identifier, identifier, title, "", "", "", formattedLog)
     else:
         diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
         formattedDiff = formatDiff(diff)
@@ -435,9 +435,6 @@ def startFormatting(title, source):
             result = """%s
   <pre id="diff"><samp>%s</samp></pre>
   <p><input type="button" value="I've read the changes!" onclick="setFrom(%s);setContext(getFieldValue('context'))">""" % (formattedLog, formattedDiff, revTo)
-            print document % (title, title, revFrom, revTo, context, result)
+            print document % (title, identifier, identifier, title, revFrom, revTo, context, result)
         else:
-            print document % (title, title, revFrom, "", context, "No result.")
-
-if __name__ == "__main__":
-    startFormatting("Web Workers", "http://svn.whatwg.org/webworkers/source")
+            print document % (title, identifier, identifier, title, revFrom, "", context, "No result.")

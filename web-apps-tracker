@@ -2,4 +2,4 @@
 import trackerlib
 
 if __name__ == "__main__":
-    trackerlib.startFormatting("(X)HTML5", "http://svn.whatwg.org/webapps/source")
+    trackerlib.startFormatting("(X)HTML5", "", "http://svn.whatwg.org/webapps/source")
