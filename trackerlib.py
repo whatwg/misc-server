@@ -145,7 +145,43 @@ def formatDiff(diff):
         formatLine(line)
 
     return "\n".join(diffList)
+
+def getDiffCommand(source, revFrom, revTo, context):
+    command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up%s"
+    if revTo:
+        return command % (source, "@%s" % revFrom, source, "@%s" % revTo, context)
+    else:
+        return command % (source, "@%s" % revFrom, source, "", context)
+
+def getLogCommand(source, revFrom, revTo):
+    revFrom += 1
+    return "svn log %s -r %s:%s" % (source, revFrom, revTo)
+
+def getDiff(source, revFrom, revTo, context, identifier):
+    if identifier == "":
+        identifier = "html5"
+    filename = identifier + "-" + str(revFrom) + "-" + str(revTo) + "-" + str(context)
+
+    # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the latest
+    if revTo != 0 and os.path.exists("diffs/" + filename):
+        return open("diffs/" + filename, "r").read()
+    else:
+        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
+
+        # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the
+        # latest
+        if revTo == 0:
+            filename = identifier + "-" + str(revFrom) + "-" + str(getNumber(diff, 2)) + "-" + str(context)
             
+            # Return early if we already have this diff stored
+            if os.path.exists("diffs/" + filename):
+                return diff
+
+        # Store the diff
+        file = open("diffs/" + filename, "w")
+        file.write(diff)
+        file.close()
+        return diff
 
 def getNumber(s, n):
     return re.split("\D+", s)[n]
@@ -167,6 +203,7 @@ def startFormatting(title, identifier, source):
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:0 }
    form p { margin:.5em }
+   input[type=number] { width:4.5em }
    table#log { border-collapse:collapse }
    table#log td { padding:.1em .5em }
    table#log td:first-child + td + td { white-space:nowrap }
@@ -347,9 +384,9 @@ def startFormatting(title, identifier, source):
    <fieldset>
     <legend>Revision</legend>
     <p>
-     <label>From: <input id=from type=number size=5 min=1 value="%s" name=from required></label>
-     <label>To: <input id=to type=number size=5 min=0 value="%s" name=to></label> (omit for the <a href="http://svn.whatwg.org/webapps/">latest revision</a>)
-     <label>Context: <input type=number step=10 size=5 min=10 value="%s" name=context></label>
+     <label>From: <input id=from type=number min=1 value="%s" name=from required></label>
+     <label>To: <input id=to type=number min=0 value="%s" name=to></label> (omit for the latest revision)
+     <label>Context: <input type=number step=10 min=10 value="%s" name=context></label>
     </p>
     <p><input type="submit" value="Generate diff"></p>
    </fieldset>
@@ -397,21 +434,11 @@ def startFormatting(title, identifier, source):
     if "source" in form:
         source = form["source"].value
 
-    def getDiffCommand(source, revFrom, revTo, context):
-        command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up%s"
-        if revTo:
-            return command % (source, "@%s" % revFrom, source, "@%s" % revTo, context)
-        else:
-            return command % (source, "@%s" % revFrom, source, "", context)
-
-
-    def getLogCommand(source, revFrom, revTo):
-        revFrom += 1
-        return "svn log %s -r %s:%s" % (source, revFrom, revTo)
-
-
     # Put it on the screen
     if not showDiff:
+        #
+        # HOME
+        #
         if "limit" in form and form["limit"].value == "-1":
             limit = ""
         else:
@@ -425,8 +452,10 @@ def startFormatting(title, identifier, source):
         formattedLog = formatRichLog(parsedLog)
         print document % (title, identifier, identifier, title, "", "", "", formattedLog)
     else:
-        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
-        formattedDiff = formatDiff(diff)
+        #
+        # DIFF
+        #
+        diff = formatDiff(getDiff(source, revFrom, revTo, context, identifier))
         if diff:
             revTo = getNumber(diff, 2)
             svnLog = os.popen(getLogCommand(source, revFrom, revTo))
@@ -434,7 +463,7 @@ def startFormatting(title, identifier, source):
             formattedLog = formatLog(parsedLog)
             result = """%s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s);setContext(getFieldValue('context'))">""" % (formattedLog, formattedDiff, revTo)
+  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s);setContext(getFieldValue('context'))">""" % (formattedLog, diff, revTo)
             print document % (title, identifier, identifier, title, revFrom, revTo, context, result)
         else:
             print document % (title, identifier, identifier, title, revFrom, "", context, "No result.")
