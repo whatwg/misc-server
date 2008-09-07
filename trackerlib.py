@@ -431,9 +431,6 @@ def startFormatting(title, identifier, source):
         except:
             pass
 
-    if "source" in form:
-        source = form["source"].value
-
     # Put it on the screen
     if not showDiff:
         #
