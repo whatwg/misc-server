@@ -167,6 +167,8 @@ def getDiff(source, revFrom, revTo, context, identifier):
         return open("diffs/" + filename, "r").read()
     else:
         diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
+        if not diff:
+            return diff
 
         # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the
         # latest
