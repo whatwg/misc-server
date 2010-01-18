@@ -95,18 +95,6 @@ def getRevisionData(revision):
         }
 
 
-def formatLog(logList):
-    output = ""
-    if logList:
-        output += "<ol id=\"log\">"
-        for revision in logList:
-            revData = getRevisionData(revision)
-            output += "\n   <li value=\"%(number)s\"%(classAttr)s" \
-                "%(titleAttr)s>%(icons)s%(changes)s</li>" % revData
-        output += "\n  </ol>"
-    return output
-
-
 def formatRichLog(logList):
     output = ""
     if logList:
@@ -459,10 +447,11 @@ def startFormatting(title, identifier, source):
             revTo = getNumber(diff, 2)
             svnLog = os.popen(getLogCommand(source, revFrom, revTo))
             parsedLog = parseRawLog(svnLog)
-            formattedLog = formatLog(parsedLog)
+            formattedLog = formatRichLog(parsedLog)
             result = """%s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><input type="button" value="I've read the changes!" onclick="setFrom(%s);setContext(getFieldValue('context'))">""" % (formattedLog, diff, revTo)
+  <p><input type="button" value="Set a cookie to prefill From and Context fields next time" onclick="setFrom(%s);setContext(getFieldValue('context'))">
+  <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>""" % (formattedLog, diff, revTo, revFrom-1, revFrom, revTo, revTo+1)
             print document % (title, identifier, identifier, title, revFrom, revTo, context, result)
         else:
             print document % (title, identifier, identifier, title, revFrom, "", context, "No result.")
