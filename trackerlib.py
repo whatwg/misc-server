@@ -95,7 +95,7 @@ def getRevisionData(revision):
         }
 
 
-def formatRichLog(logList):
+def formatLog(logList):
     output = ""
     if logList:
         output += "<table id=\"log\">\n   <tr>" \
@@ -134,34 +134,34 @@ def formatDiff(diff):
 
     return "\n".join(diffList)
 
-def getDiffCommand(source, revFrom, revTo, context):
-    command = "svn diff --old %s%s --new %s%s --diff-cmd=diff -x -up%s"
+def getDiffCommand(source, revFrom, revTo):
+    command = "svn diff -r %s%s %s"
     if revTo:
-        return command % (source, "@%s" % revFrom, source, "@%s" % revTo, context)
+        return command % (revFrom, ":%s" % revTo, source)
     else:
-        return command % (source, "@%s" % revFrom, source, "", context)
+        return command % (revFrom, "", source)
 
 def getLogCommand(source, revFrom, revTo):
     revFrom += 1
     return "svn log %s -r %s:%s" % (source, revFrom, revTo)
 
-def getDiff(source, revFrom, revTo, context, identifier):
+def getDiff(source, revFrom, revTo, identifier):
     if identifier == "":
         identifier = "html5"
-    filename = identifier + "-" + str(revFrom) + "-" + str(revTo) + "-" + str(context)
+    filename = identifier + "-" + str(revFrom) + "-" + str(revTo)
 
     # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the latest
     if revTo != 0 and os.path.exists("diffs/" + filename):
         return open("diffs/" + filename, "r").read()
     else:
-        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo, context)).read())
+        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
         if not diff:
             return diff
 
         # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the
         # latest
         if revTo == 0:
-            filename = identifier + "-" + str(revFrom) + "-" + str(getNumber(diff, 2)) + "-" + str(context)
+            filename = identifier + "-" + str(revFrom) + "-" + str(getNumber(diff, 2))
             
             # Return early if we already have this diff stored
             if os.path.exists("diffs/" + filename):
@@ -174,7 +174,7 @@ def getDiff(source, revFrom, revTo, context, identifier):
         return diff
 
 def getNumber(s, n):
-    return re.split("\D+", s)[n]
+    return int(re.split("\D+", s)[n])
 
 
 def toInt(s):
@@ -188,11 +188,16 @@ def startFormatting(title, identifier, source):
 <html lang="en">
  <head>
   <meta name="robots" content="index, nofollow">
-  <title>%s Tracking</title>
+  <title>%s Revision Tracker</title>
+  <link rel=icon href="http://www.whatwg.org/images/icon">
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
-   form { margin:0 }
-   form p { margin:.5em }
+   form { margin:1em 0; font-size:.7em }
+   form[hidden] { display:none }            except:
+                 revTo = 0
+   fieldset { margin:0; padding:0; border:0 }
+   legend { padding:0; font-weight:bold }
+   form p { margin:0 }
    input[type=number] { width:4.5em }
    table#log { border-collapse:collapse }
    table#log td { padding:.1em .5em }
@@ -253,10 +258,6 @@ def startFormatting(title, identifier, source):
     setFieldValue('from', n)
     setFieldValue('to', '')
    }
-   function setContext(n) {
-    createCookie('context', n, 30)
-    setFieldValue('context', n)
-   }
 
    // for pre javascript 1.6 browsers
    if (!Array.prototype.indexOf) {
@@ -281,7 +282,7 @@ def startFormatting(title, identifier, source):
    var affects = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools", "none"];
    var stability = ["draft-content", "stable-draft", "implemented", "stable"]; // not editorial
    window.onload = function() {
-    var form = document.forms[0];
+    var form = document.forms[1];
     var log = document.getElementById("log");
     if (log.tagName == "TABLE") {
      var rows = log.getElementsByTagName("tr");
@@ -346,10 +347,19 @@ def startFormatting(title, identifier, source):
   </script>
  </head>
  <body>
-  <h1>%s Tracking</h1>
+  <h1>%s Revision Tracker</h1>
   <form>
    <fieldset>
+    <legend>Diff</legend>
+    <label>From: <input id=from type=number min=1 value="%s" name=from required></label>
+    <label>To: <input id=to type=number min=0 value="%s" name=to></label> (omit for latest revision)
+    <input type="submit" value="Generate diff">
+   </fieldset>
+  </form>
+  <form%s>
+   <fieldset>
     <legend>Filter</legend>
+    <!--
     <p>Affects:
      <label><input type=checkbox name=affects_authors checked> <img src="icons/authors" alt=""> Authors</label>
      <label><input type=checkbox name=affects_conformance-checkers checked> <img src="icons/conformance-checkers" alt=""> Validators</label>
@@ -360,41 +370,25 @@ def startFormatting(title, identifier, source):
      <label><input type=checkbox name=affects_google-gears checked> <img src="icons/google-gears" alt=""> Gears</label>
      <label><input type=checkbox name=affects_tools checked> <img src="icons/tools" alt=""> Tools</label>
      <label><input type=checkbox name=affects_none checked> None</label>
-    </p>
     <p>Stability:
      <label class=draft-content><input type=checkbox name=stability_draft-content checked> Draft content</label>
      <label class=stable-draft><input type=checkbox name=stability_stable-draft checked> Stable draft</label>
      <label class=implemented><input type=checkbox name=stability_implemented checked> Implemented</label>
      <label class=stable><input type=checkbox name=stability_stable checked> Stable</label>
-     <label class=editorial><input type=checkbox name=editorial checked> Show editorial changes</label>
-    </p>
-   </fieldset>
-  </form>
-  <form>
-   <fieldset>
-    <legend>Revision</legend>
-    <p>
-     <label>From: <input id=from type=number min=1 value="%s" name=from required></label>
-     <label>To: <input id=to type=number min=0 value="%s" name=to></label> (omit for the latest revision)
-     <label>Context: <input type=number step=10 min=10 value="%s" name=context></label>
-    </p>
-    <p><input type="submit" value="Generate diff"></p>
+    -->
+    <label class=editorial>Show editorial changes <input type=checkbox name=editorial checked></label>
    </fieldset>
   </form>
   <script>
    if(getFieldValue('from') == "" && readCookie('from') != null)
     setFrom(readCookie('from'))
-   if(getFieldValue('context') == "" && readCookie('context') != null)
-    setContext(readCookie('context'))
   </script>
-  <hr>
   %s
  </body>
 </html>"""
     showDiff = False
     revFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
     revTo = 0
-    context = 10
     os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
     form = cgi.FieldStorage()
 
@@ -413,14 +407,6 @@ def startFormatting(title, identifier, source):
         except:
             pass
 
-    if "context" in form:
-        try:
-            context = toInt(form["context"].value)
-            if context < 10:
-                context = 10
-        except:
-            pass
-
     # Put it on the screen
     if not showDiff:
         #
@@ -436,22 +422,24 @@ def startFormatting(title, identifier, source):
                 pass
         svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
-        formattedLog = formatRichLog(parsedLog)
+        formattedLog = formatLog(parsedLog)
         print document % (title, identifier, identifier, title, "", "", "", formattedLog)
     else:
         #
         # DIFF
         #
-        diff = formatDiff(getDiff(source, revFrom, revTo, context, identifier))
-        if diff:
+        diff = formatDiff(getDiff(source, revFrom, revTo, identifier))
+        try:
+            # This fails if there is no diff -- hack
             revTo = getNumber(diff, 2)
             svnLog = os.popen(getLogCommand(source, revFrom, revTo))
             parsedLog = parseRawLog(svnLog)
-            formattedLog = formatRichLog(parsedLog)
+            formattedLog = formatLog(parsedLog)
             result = """%s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><input type="button" value="Set a cookie to prefill From and Context fields next time" onclick="setFrom(%s);setContext(getFieldValue('context'))">
-  <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>""" % (formattedLog, diff, revTo, revFrom-1, revFrom, revTo, revTo+1)
-            print document % (title, identifier, identifier, title, revFrom, revTo, context, result)
-        else:
-            print document % (title, identifier, identifier, title, revFrom, "", context, "No result.")
+  <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
+  <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
+            print document % (title, identifier, identifier, title, revFrom, revTo, " hidden", result)
+        except:
+            print document % (title, identifier, identifier, title, revFrom, "", " hidden", "No result.")
+
