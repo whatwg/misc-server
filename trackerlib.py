@@ -6,7 +6,7 @@ import re
 # This function can probably be beautified
 def parseRawLog(svnLog):
     """Parses a raw svn log.
-    
+
     Returns a list with entries, each list item containing a dictionary with
     two keys; info (string) and changes (list)
     """
@@ -14,14 +14,14 @@ def parseRawLog(svnLog):
     entries = []
     current = 0
     separator = "-" * 72
-    for i, line in enumerate(logList): 
+    for i, line in enumerate(logList):
         if line != separator:
             # After the separator comes the log info
             if logList[i - 1] == separator:
                 entries.append({"info": line, "changes": []})
             elif line:
                 entries[current]["changes"].append(line)
-            
+
             # If next list item is a separator, there are no more changes
             if logList[i + 1] == separator:
                 current += 1
@@ -46,8 +46,11 @@ def parseLogLine(logInfo):
         }
     changes = []
     classes = []
+    bug = None
     for line in logInfo:
-        if line.startswith("["):
+        if line.startswith("Fixing http://www.w3.org/Bugs/Public/show_bug.cgi?id="):
+            bug = line[53:]
+        elif line.startswith("["):
             for c in line:
                 if c in mapping:
                     classes.append(mapping[c])
@@ -59,7 +62,7 @@ def parseLogLine(logInfo):
             changes.append(line.split(") ", 1)[-1])
         else:
             changes.append(line)
-    return {"changes": changes, "classes": classes}
+    return {"changes": changes, "classes": classes, "bug": bug}
 
 
 def getRevisionData(revision):
@@ -84,6 +87,10 @@ def getRevisionData(revision):
     # TODO: Implement the source stuff to work with links
     link = "?from=%s&amp;to=%s" % (str(toInt(number) - 1), number)
 
+    bug = ""
+    if revChanges["bug"]:
+        bug = "<a href=\"http://www.w3.org/Bugs/Public/show_bug.cgi?id=" + revChanges["bug"] + "\">" + revChanges["bug"] + "</a>"
+
     return {
         "number": number,
         "link": link,
@@ -91,7 +98,8 @@ def getRevisionData(revision):
         "titleAttr": titleAttr,
         "icons": icons,
         "changes": changes,
-        "date": date
+        "date": date,
+        "bug" : bug
         }
 
 
@@ -101,12 +109,14 @@ def formatLog(logList):
         output += "<table id=\"log\">\n   <tr>" \
             "<th><abbr title=\"Revision\">R</abbr></th>" \
             "<th>Comment</th>" \
+            "<th><abbr title=\"Associated W3C Bug\">B</abbr></th>" \
             "<th>Time (UTC)</th></tr>"
         for revision in logList:
             revData = getRevisionData(revision)
             output += "\n   <tr%(classAttr)s%(titleAttr)s>" \
                 "<td>%(number)s</td>" \
                 "<td><a href=\"%(link)s\">%(icons)s%(changes)s</a></td>" \
+                "<td>%(bug)s</td>" \
                 "<td>%(date)s</td></tr>" % revData
         output += "\n  </table>"
     return output
@@ -114,7 +124,7 @@ def formatLog(logList):
 
 def formatDiff(diff):
     """Takes a svn diff and marks it up with elements for styling purposes
-    
+
     Returns a formatted diff
     """
     diff = diff.splitlines()
@@ -162,7 +172,7 @@ def getDiff(source, revFrom, revTo, identifier):
         # latest
         if revTo == 0:
             filename = identifier + "-" + str(revFrom) + "-" + str(getNumber(diff, 2))
-            
+
             # Return early if we already have this diff stored
             if os.path.exists("diffs/" + filename):
                 return diff
@@ -185,164 +195,60 @@ def startFormatting(title, identifier, source):
     document = """Content-Type:text/html;charset=UTF-8
 
 <!doctype html>
-<html lang="en">
+<html lang=en>
  <head>
-  <meta name="robots" content="index, nofollow">
+  <meta name=robots content="index, nofollow">
   <title>%s Revision Tracker</title>
-  <link rel=icon href="http://www.whatwg.org/images/icon">
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:1em 0; font-size:.7em }
-   form[hidden] { display:none }            except:
-                 revTo = 0
+   form[hidden] { display:none }
    fieldset { margin:0; padding:0; border:0 }
    legend { padding:0; font-weight:bold }
-   form p { margin:0 }
    input[type=number] { width:4.5em }
-   table#log { border-collapse:collapse }
-   table#log td { padding:.1em .5em }
-   table#log td:first-child + td + td { white-space:nowrap }
+   table { border-collapse:collapse }
+   table td { padding:.1em .5em }
+   table td:last-child { white-space:nowrap }
    img { font-size:xx-small }
 
-   .draft-content { background-color:#eee; }
-   .stable-draft { background-color:#fcc; }
-   .implemented { background-color:#f99; }
-   .stable { background-color:#f66; }
-   body .editorial { color:gray; }
+   .draft-content { background-color:#eee }
+   .stable-draft { background-color:#fcc }
+   .implemented { background-color:#f99 }
+   .stable { background-color:#f66 }
+   body .editorial { color:gray }
 
-   :link { background-color:transparent; color:#00f; }
-   :visited { background-color:transparent; color:#066; }
-   img { border-style:none; vertical-align:middle; }
+   :link { background:transparent; color:#00f }
+   :visited { background:transparent; color:#066 }
+   img { border:0; vertical-align:middle }
 
-   td :link { color:inherit; }
-   td a { text-decoration:none; display:block; }
-   td a:hover { text-decoration:underline; }
+   td :link { color:inherit }
+   td a { text-decoration:none; display:block }
+   td a:hover { text-decoration:underline }
 
-   /* filter */
-   .editorial tr.editorial,
-   .editorial li.editorial,
-   .hidden { display:none; }
-   
-   #diff { display: table; white-space: normal }
-   #diff samp samp { display: block; white-space: pre; margin: 0 }
-   #diff .deletion { background: #fdd; color: #900 }
-   #diff .addition { background: #dfd; color: #000 }
-   #diff .line-info { background: #eee; color: #000 }
+   .editorial tr.editorial { display:none }
+
+   pre { display:table; white-space:normal }
+   samp samp { margin:0; display:block; white-space:pre }
+   .deletion { background:#fdd; color:#900 }
+   .addition { background:#dfd; color:#000 }
+   .line-info { background:#eee; color:#000 }
   </style>
   <script>
-   function createCookie(name,value,days) {
-    var expires = ""
-    if(days) {
-     var date = new Date()
-     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
-     expires = "; expires=" + date.toGMTString()
-    }
-    document.cookie = "%s"+name+"="+value+expires+"; path=/"
-   }
-   function readCookie(name) {
-    name = "%s"+name+"="
-    var ca = document.cookie.split(';')
-    for(var i=0; i < ca.length; i++) {
-     var c = ca[i]
-     while(c.charAt(0)==' ')
-      c = c.substring(1,c.length)
-     if(c.indexOf(name) == 0)
-      return c.substring(name.length,c.length)
-    }
-    return null;
-   }
-   function getFieldValue(idName) { return document.getElementById(idName).value }
+   function setCookie(name,value) { localStorage["tracker-" + "%s"] = value }
+   function readCookie(name) { return localStorage["tracker-" + "%s"] }
    function setFieldValue(idName, n) { document.getElementById(idName).value = n }
+   function getFieldValue(idName) { return document.getElementById(idName).value }
    function setFrom(n) {
-    createCookie('from', n, 30)
-    setFieldValue('from', n)
-    setFieldValue('to', '')
+     setCookie("from", n)
+     setFieldValue("from", n)
+     setFieldValue("to", "")
    }
 
-   // for pre javascript 1.6 browsers
-   if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(el, start) {
-     var start = start || 0;
-     for (var i = 0; i < this.length; ++i) {
-      if (this[i] === el) {
-       return i;
-      }
-     }
-     return -1;
-    }
-   }
-   function addClass(elm, className) {
-    var reg = new RegExp('(^| )'+ className +'($| )');
-    if (!reg.test(elm.className))
-     elm.className += " "+className;
-   }
-   function removeClass(elm, className) {
-    elm.className = elm.className.replace(new RegExp("(^|\\\s+)" + className + "($|\\\s+)", "g"), " ");
-   }
-   var affects = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools", "none"];
-   var stability = ["draft-content", "stable-draft", "implemented", "stable"]; // not editorial
-   window.onload = function() {
-    var form = document.forms[1];
-    var log = document.getElementById("log");
-    if (log.tagName == "TABLE") {
-     var rows = log.getElementsByTagName("tr");
-     var firstRow = 1;
-    } else {
-     var rows = log.getElementsByTagName("li");
-     var firstRow = 0;
-    }
-    var rowsLen = rows.length;
-    
-    // make sure all checkboxes are checked (in case of reload)
-    for(var i = 1, len = form.elements.length; i < len; ++i) {
-     form.elements[i].checked = true;
-    }
-    function updateFilter(arr, item, bool) {
-     if (arr.indexOf(item) != -1 && !bool)
-      arr.splice(arr.indexOf(item), 1);
-     else
-      arr.push(item);
-    }
-    function updateTable() {
-     var affectsLen = affects.length;
-     var stabilityLen = stability.length;
-     for (var i = firstRow; i < rowsLen; ++i) {
-      var affectMatches = false;
-      var stabilityMatches = false;
-      var row = rows[i];
-      var rowClasses = row.className.split(" ");
-      for (var j = 0; j < affectsLen; ++j) {
-       
-       if (rowClasses.indexOf(affects[j]) != -1)
-        affectMatches = true;
-      }
-      for (var k = 0; k < stabilityLen; ++k) {
-       if (rowClasses.indexOf(stability[k]) != -1)
-        stabilityMatches = true;
-      }
-      if (affectMatches && stabilityMatches)
-       removeClass(row, "hidden"); 
-      else
-       addClass(row, "hidden");
-     }
-    }
-    form.onchange = function(e) {
-     var target = e.target;
-     if(target.type != "checkbox") return;
-     if(target.name == "editorial") {
-      if(target.checked)
-       removeClass(document.body, target.name);
-      else
-       addClass(document.body, target.name);
-     } else {
-      var tokens = target.name.split("_");
-      if (tokens[0] == "affects")
-       updateFilter(affects, tokens[1], target.checked);
-      else
-       updateFilter(stability, tokens[1], target.checked);
-      updateTable();
-     }
-    }
+   function showEdits() { return document.getElementById("editorial").checked }
+   function updateEditorial() {
+     var editorial = showEdits() ? "" : "editorial"
+     setCookie("editorial", editorial)
+     document.body.className = editorial
    }
   </script>
  </head>
@@ -353,35 +259,22 @@ def startFormatting(title, identifier, source):
     <legend>Diff</legend>
     <label>From: <input id=from type=number min=1 value="%s" name=from required></label>
     <label>To: <input id=to type=number min=0 value="%s" name=to></label> (omit for latest revision)
-    <input type="submit" value="Generate diff">
+    <input type=submit value="Generate diff">
    </fieldset>
   </form>
-  <form%s>
+  <form>
    <fieldset>
     <legend>Filter</legend>
-    <!--
-    <p>Affects:
-     <label><input type=checkbox name=affects_authors checked> <img src="icons/authors" alt=""> Authors</label>
-     <label><input type=checkbox name=affects_conformance-checkers checked> <img src="icons/conformance-checkers" alt=""> Validators</label>
-     <label><input type=checkbox name=affects_gecko checked> <img src="icons/gecko" alt=""> Gecko</label>
-     <label><input type=checkbox name=affects_internet-explorer checked> <img src="icons/internet-explorer" alt=""> IE</label>
-     <label><input type=checkbox name=affects_opera checked> <img src="icons/opera" alt=""> Opera</label>
-     <label><input type=checkbox name=affects_webkit checked> <img src="icons/webkit" alt=""> WebKit</label>
-     <label><input type=checkbox name=affects_google-gears checked> <img src="icons/google-gears" alt=""> Gears</label>
-     <label><input type=checkbox name=affects_tools checked> <img src="icons/tools" alt=""> Tools</label>
-     <label><input type=checkbox name=affects_none checked> None</label>
-    <p>Stability:
-     <label class=draft-content><input type=checkbox name=stability_draft-content checked> Draft content</label>
-     <label class=stable-draft><input type=checkbox name=stability_stable-draft checked> Stable draft</label>
-     <label class=implemented><input type=checkbox name=stability_implemented checked> Implemented</label>
-     <label class=stable><input type=checkbox name=stability_stable checked> Stable</label>
-    -->
-    <label class=editorial>Show editorial changes <input type=checkbox name=editorial checked></label>
+    <label class="editorial">Show editorial changes <input type="checkbox" id="editorial" checked="" onchange="updateEditorial()"></label>
    </fieldset>
   </form>
   <script>
-   if(getFieldValue('from') == "" && readCookie('from') != null)
-    setFrom(readCookie('from'))
+   if(getFieldValue("from") == "" && readCookie("from") != null)
+     setFrom(readCookie("from"))
+   if(readCookie("editorial") == "editorial") {
+     document.getElementById("editorial").checked = false
+     updateEditorial()
+   }
   </script>
   %s
  </body>
@@ -423,7 +316,7 @@ def startFormatting(title, identifier, source):
         svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
         formattedLog = formatLog(parsedLog)
-        print document % (title, identifier, identifier, title, "", "", "", formattedLog)
+        print document % (title, identifier, identifier, title, "", "", formattedLog)
     else:
         #
         # DIFF
@@ -439,7 +332,7 @@ def startFormatting(title, identifier, source):
   <pre id="diff"><samp>%s</samp></pre>
   <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
   <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
-            print document % (title, identifier, identifier, title, revFrom, revTo, " hidden", result)
+            print document % (title, identifier, identifier, title, revFrom, revTo, result)
         except:
-            print document % (title, identifier, identifier, title, revFrom, "", " hidden", "No result.")
+            print document % (title, identifier, identifier, title, revFrom, "", "No result.")
 
