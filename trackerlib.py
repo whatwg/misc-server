@@ -202,7 +202,6 @@ def startFormatting(title, identifier, source):
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:1em 0; font-size:.7em }
-   form[hidden] { display:none }
    fieldset { margin:0; padding:0; border:0 }
    legend { padding:0; font-weight:bold }
    input[type=number] { width:4.5em }
