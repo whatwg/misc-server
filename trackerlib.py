@@ -191,14 +191,13 @@ def toInt(s):
     return int(float(s))
 
 
-def startFormatting(title, identifier, source):
+def startFormatting(title, identifier, url, source):
     document = """Content-Type:text/html;charset=UTF-8
 
 <!doctype html>
 <html lang=en>
  <head>
-  <meta name=robots content="index, nofollow">
-  <title>%s Revision Tracker</title>
+  <title>%s Tracker</title>
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
    form { margin:1em 0; font-size:.7em }
@@ -252,7 +251,7 @@ def startFormatting(title, identifier, source):
   </script>
  </head>
  <body>
-  <h1>%s Revision Tracker</h1>
+  <h1>%s</h1>
   <form>
    <fieldset>
     <legend>Diff</legend>
@@ -315,12 +314,13 @@ def startFormatting(title, identifier, source):
         svnLog = os.popen("svn log %s%s" % (source, limit))
         parsedLog = parseRawLog(svnLog)
         formattedLog = formatLog(parsedLog)
-        print document % (title, identifier, identifier, title, "", "", formattedLog)
+        print document % (title, identifier, identifier, title + " Tracker", "", "", formattedLog)
     else:
         #
         # DIFF
         #
         diff = formatDiff(getDiff(source, revFrom, revTo, identifier))
+        markuptitle = "<a href=" + url + ">" + title + " Tracker" + "</a>"
         try:
             # This fails if there is no diff -- hack
             revTo = getNumber(diff, 2)
@@ -331,7 +331,6 @@ def startFormatting(title, identifier, source):
   <pre id="diff"><samp>%s</samp></pre>
   <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
   <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
-            print document % (title, identifier, identifier, title, revFrom, revTo, result)
+            print document % (title, identifier, identifier, markuptitle, revFrom, revTo, result)
         except:
-            print document % (title, identifier, identifier, title, revFrom, "", "No result.")
-
+            print document % (title, identifier, identifier, markuptitle, revFrom, "", "No result.")
