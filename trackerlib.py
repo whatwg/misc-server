@@ -232,8 +232,8 @@ def startFormatting(title, identifier, url, source):
    .line-info { background:#eee; color:#000 }
   </style>
   <script>
-   function setCookie(name,value) { localStorage["tracker-" + "%s"] = value }
-   function readCookie(name) { return localStorage["tracker-" + "%s"] }
+   function setCookie(name,value) { localStorage["tracker%s-" + name] = value }
+   function readCookie(name) { return localStorage["tracker%s-" + name] }
    function setFieldValue(idName, n) { document.getElementById(idName).value = n }
    function getFieldValue(idName) { return document.getElementById(idName).value }
    function setFrom(n) {
