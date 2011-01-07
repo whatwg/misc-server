@@ -340,7 +340,7 @@ def startFormatting(title, identifier, url, source):
                     shorturlmarkup += str(revTo)
                 else:
                     shorturlmarkup += str(revFrom) + "-" + str(revTo)
-                shorturlmarkup + "</code>\n"
+                shorturlmarkup += "</code>\n  "
             shorturlmarkup += result
             print document % (title, identifier, identifier, markuptitle, revFrom, revTo, shorturlmarkup)
         except:
