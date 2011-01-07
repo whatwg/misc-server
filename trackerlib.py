@@ -331,6 +331,17 @@ def startFormatting(title, identifier, url, source):
   <pre id="diff"><samp>%s</samp></pre>
   <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
   <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
-            print document % (title, identifier, identifier, markuptitle, revFrom, revTo, result)
+
+            # Short URL
+            shorturlmarkup = ""
+            if title == "HTML5":
+                shorturlmarkup = "<p>Short URL: <code>http://html5.org/r/"
+                if revTo - revFrom == 1:
+                    shorturlmarkup += str(revTo)
+                else:
+                    shorturlmarkup += str(revFrom) + "-" + str(revTo)
+                shorturlmarkup + "</code>\n"
+            shorturlmarkup += result
+            print document % (title, identifier, identifier, markuptitle, revFrom, revTo, shorturlmarkup)
         except:
             print document % (title, identifier, identifier, markuptitle, revFrom, "", "No result.")
