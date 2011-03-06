@@ -335,12 +335,12 @@ def startFormatting(title, identifier, url, source):
             # Short URL
             shorturlmarkup = ""
             if title == "HTML5":
-                shorturlmarkup = "<p>Short URL: <code>http://html5.org/r/"
+                shorturl = "http://html5.org/r/"
                 if revTo - revFrom == 1:
-                    shorturlmarkup += str(revTo)
+                    shorturl += str(revTo)
                 else:
-                    shorturlmarkup += str(revFrom) + "-" + str(revTo)
-                shorturlmarkup += "</code>\n  "
+                    shorturl += str(revFrom) + "-" + str(revTo)
+                shorturlmarkup = """<p>Short URL: <code><a href="%s">%s</a></code>\n  """ % (shorturl, shorturl)
             shorturlmarkup += result
             print document % (title, identifier, identifier, markuptitle, revFrom, revTo, shorturlmarkup)
         except:
