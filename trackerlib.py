@@ -107,16 +107,16 @@ def formatLog(logList):
     output = ""
     if logList:
         output += "<table id=\"log\">\n   <tr>" \
-            "<th><abbr title=\"Revision\">R</abbr></th>" \
+            "<th>SVN</th>" \
+            "<th>Bug</th>" \
             "<th>Comment</th>" \
-            "<th><abbr title=\"Associated W3C Bug\">B</abbr></th>" \
             "<th>Time (UTC)</th></tr>"
         for revision in logList:
             revData = getRevisionData(revision)
             output += "\n   <tr%(classAttr)s%(titleAttr)s>" \
                 "<td>%(number)s</td>" \
-                "<td><a href=\"%(link)s\">%(icons)s%(changes)s</a></td>" \
                 "<td>%(bug)s</td>" \
+                "<td><a href=\"%(link)s\">%(icons)s%(changes)s</a></td>" \
                 "<td>%(date)s</td></tr>" % revData
         output += "\n  </table>"
     return output
