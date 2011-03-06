@@ -178,6 +178,8 @@ def getDiff(source, revFrom, revTo, identifier):
                 return diff
 
         # Store the diff
+        if not os.path.isdir("diffs"):
+            os.mkdir("diffs")
         file = open("diffs/" + filename, "w")
         file.write(diff)
         file.close()
