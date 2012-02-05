@@ -50,6 +50,8 @@ def parseLogLine(logInfo):
     for line in logInfo:
         if line.startswith("Fixing http://www.w3.org/Bugs/Public/show_bug.cgi?id="):
             bug = line[53:]
+        elif line.startswith("Fixing https://www.w3.org/Bugs/Public/show_bug.cgi?id="):
+            bug = line[54:]
         elif line.startswith("["):
             for c in line:
                 if c in mapping:
