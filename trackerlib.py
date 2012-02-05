@@ -62,6 +62,8 @@ def parseLogLine(logInfo):
                 if c == ")":
                     break
             changes.append(line.split(") ", 1)[-1])
+        elif line.startswith("Affected topics:"):
+            pass
         else:
             changes.append(line)
     return {"changes": changes, "classes": classes, "bug": bug}
