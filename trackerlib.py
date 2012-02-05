@@ -91,7 +91,7 @@ def getRevisionData(revision):
 
     bug = ""
     if revChanges["bug"]:
-        bug = "<a href=\"http://www.w3.org/Bugs/Public/show_bug.cgi?id=" + revChanges["bug"] + "\">" + revChanges["bug"] + "</a>"
+        bug = "<a href=\"https://www.w3.org/Bugs/Public/show_bug.cgi?id=" + revChanges["bug"] + "\">" + revChanges["bug"] + "</a>"
 
     return {
         "number": number,
