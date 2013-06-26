@@ -2,6 +2,7 @@
 import os
 import cgi
 import re
+import urllib
 
 # This function can probably be beautified
 def parseRawLog(svnLog):
@@ -197,7 +198,7 @@ def toInt(s):
     return int(float(s))
 
 
-def startFormatting(title, identifier, url, source):
+def startFormatting(title, identifier, url, source, bugzillaComponent):
     document = """Content-Type:text/html;charset=UTF-8
 
 <!doctype html>
@@ -327,6 +328,9 @@ def startFormatting(title, identifier, url, source):
         #
         diff = formatDiff(getDiff(source, revFrom, revTo, identifier))
         markuptitle = "<a href=" + url + ">" + title + " Tracker" + "</a>"
+        bugzillaComponent = urllib.quote(bugzillaComponent, "")
+        bugFiler = """<p><a href=https://www.w3.org/Bugs/Public/enter_bug.cgi?product=WHATWG&component=%s>File a bug</a></p>
+  <script src=http://resources.whatwg.org/file-bug.js async></script>""" % (bugzillaComponent)
         try:
             # This fails if there is no diff -- hack
             revTo = getNumber(diff, 2)
@@ -334,9 +338,10 @@ def startFormatting(title, identifier, url, source):
             parsedLog = parseRawLog(svnLog)
             formattedLog = formatLog(parsedLog)
             result = """%s
+  %s
   <pre id="diff"><samp>%s</samp></pre>
   <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
-  <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
+  <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (bugFiler, formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
 
             # Short URL
             shorturlmarkup = ""
