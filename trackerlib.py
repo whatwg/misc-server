@@ -345,7 +345,7 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
 
             # Short URL
             shorturlmarkup = ""
-            if title == "HTML5":
+            if title == "HTML Standard":
                 shorturl = "http://html5.org/r/"
                 if revTo - revFrom == 1:
                     shorturl += str(revTo)
