@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Make sure we have a module for doing shell scripts and one for simple web forms.
 import os
 import cgi
@@ -5,27 +7,29 @@ import re
 import urllib
 
 # This function can probably be beautified
-def parseRawLog(svnLog):
-    """Parses a raw svn log.
+def parseRawLog(log):
+    """Parses a log.
 
     Returns a list with entries, each list item containing a dictionary with
     two keys; info (string) and changes (list)
     """
-    logList = cgi.escape(svnLog.read()).splitlines()
+    logList = cgi.escape(log.read()).splitlines()
     entries = []
     current = 0
-    separator = "-" * 72
     for i, line in enumerate(logList):
-        if line != separator:
-            # After the separator comes the log info
-            if logList[i - 1] == separator:
-                entries.append({"info": line, "changes": []})
-            elif line:
-                entries[current]["changes"].append(line)
-
-            # If next list item is a separator, there are no more changes
-            if logList[i + 1] == separator:
+        if line.startswith("git-svn-id: "):
+            if entries[-1]["current"] == current:
+                entries[current]["info"] = line
                 current += 1
+            continue
+
+        if line == "":
+            continue
+
+        if len(entries) == current:
+            entries.append({"info": "", "date":line, "changes": [], "current": current})
+        else:
+            entries[current]["changes"].append(line)
     return entries
 
 
@@ -71,16 +75,14 @@ def parseLogLine(logInfo):
 
 
 def getRevisionData(revision):
-    revInfo = revision["info"] # This is the info line for a revision
-    revChanges = parseLogLine(revision["changes"]) # Changes for the revision
+    # get the revision number
+    number = getNumber(revision["info"], 1)
+
+    # parse revision changes
+    revChanges = parseLogLine(revision["changes"])
 
     iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools"]
     titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
-
-    # Get the revision number
-    number = getNumber(revInfo, 1)
-    # Get the revision date and chop off the seconds and time zone
-    date = re.split(" \(", re.split(" \| ", revInfo)[2])[0][:16]
 
     # Get stuff from the changes line(s)
     # TODO: fix the classAttr and titleAttr to only return if non-empty
@@ -90,7 +92,7 @@ def getRevisionData(revision):
     changes = "<br>".join(revChanges["changes"])
 
     # TODO: Implement the source stuff to work with links
-    link = "?from=%s&amp;to=%s" % (str(toInt(number) - 1), number)
+    link = "?from=%s" % (str(toInt(number) - 1))
 
     bug = ""
     if revChanges["bug"]:
@@ -103,7 +105,7 @@ def getRevisionData(revision):
         "titleAttr": titleAttr,
         "icons": icons,
         "changes": changes,
-        "date": date,
+        "date": revision["date"][:16],
         "bug" : bug
         }
 
@@ -128,11 +130,11 @@ def formatLog(logList):
 
 
 def formatDiff(diff):
-    """Takes a svn diff and marks it up with elements for styling purposes
+    """Takes a diff and marks it up with elements for styling purposes
 
     Returns a formatted diff
     """
-    diff = diff.splitlines()
+    diff = diff.splitlines()[4:]
     diffList = []
 
     def formatLine(line):
@@ -149,56 +151,15 @@ def formatDiff(diff):
 
     return "\n".join(diffList)
 
-def getDiffCommand(source, revFrom, revTo):
-    command = "svn diff -r %s%s %s"
-    if revTo:
-        return command % (revFrom, ":%s" % revTo, source)
-    else:
-        return command % (revFrom, "", source)
-
-def getLogCommand(source, revFrom, revTo):
-    revFrom += 1
-    return "svn log %s -r %s:%s" % (source, revFrom, revTo)
-
-def getDiff(source, revFrom, revTo, identifier):
-    if identifier == "":
-        identifier = "html5"
-    filename = identifier + "-" + str(revFrom) + "-" + str(revTo)
-
-    # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the latest
-    if revTo != 0 and os.path.exists("diffs/" + filename):
-        return open("diffs/" + filename, "r").read()
-    else:
-        diff = cgi.escape(os.popen(getDiffCommand(source, revFrom, revTo)).read())
-        if not diff:
-            return diff
-
-        # Specialcase revTo 0 so future revFrom=c&revTo=0 still show the
-        # latest
-        if revTo == 0:
-            filename = identifier + "-" + str(revFrom) + "-" + str(getNumber(diff, 2))
-
-            # Return early if we already have this diff stored
-            if os.path.exists("diffs/" + filename):
-                return diff
-
-        # Store the diff
-        if not os.path.isdir("diffs"):
-            os.mkdir("diffs")
-        file = open("diffs/" + filename, "w")
-        file.write(diff)
-        file.close()
-        return diff
 
 def getNumber(s, n):
     return int(re.split("\D+", s)[n])
-
 
 def toInt(s):
     return int(float(s))
 
 
-def startFormatting(title, identifier, url, source, bugzillaComponent):
+def startFormatting(title, url, bugzillaComponent):
     document = """Content-Type:text/html;charset=UTF-8
 
 <!doctype html>
@@ -207,6 +168,7 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
   <title>%s Tracker</title>
   <style>
    html { background:#fff; color:#000; font:1em/1 Arial, sans-serif }
+   body { margin:1em 1em 3em }
    form { margin:1em 0; font-size:.7em }
    fieldset { margin:0; padding:0; border:0 }
    legend { padding:0; font-weight:bold }
@@ -239,8 +201,8 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
    .line-info { background:#eee; color:#000 }
   </style>
   <script>
-   function setCookie(name,value) { localStorage["tracker%s-" + name] = value }
-   function readCookie(name) { return localStorage["tracker%s-" + name] }
+   function setCookie(name,value) { localStorage["tracker-" + name] = value }
+   function readCookie(name) { return localStorage["tracker-" + name] }
    function setFieldValue(idName, n) { document.getElementById(idName).value = n }
    function getFieldValue(idName) { return document.getElementById(idName).value }
    function setFrom(n) {
@@ -262,8 +224,7 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
   <form>
    <fieldset>
     <legend>Diff</legend>
-    <label>From: <input id=from type=number min=1 value="%s" name=from required></label>
-    <label>To: <input id=to type=number min=0 value="%s" name=to></label> (omit for latest revision)
+    <label>SVN: <input id=from type=number min=1 value="%s" name=from required></label>
     <input type=submit value="Generate diff">
    </fieldset>
   </form>
@@ -285,23 +246,16 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
  </body>
 </html>"""
     showDiff = False
-    revFrom = 290 # basically ignored, but sometimes a useful fiction for debugging
-    revTo = 0
+    revFrom = 8644 # value is ignored, debugging only
+    revTo = 8645   # same
     os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
     form = cgi.FieldStorage()
 
     if "from" in form:
         try:
             revFrom = toInt(form["from"].value)
+            revTo = revFrom + 1
             showDiff = True
-        except:
-            pass
-
-    if showDiff and "to" in form:
-        try:
-            revTo = toInt(form["to"].value)
-            if 0 < revTo < revFrom:
-                revFrom, revTo = revTo, revFrom
         except:
             pass
 
@@ -313,35 +267,41 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
         if "limit" in form and form["limit"].value == "-1":
             limit = ""
         else:
-            limit = " --limit 100"
+            limit = " -100"
             try:
-                limit = " --limit %s" % toInt(form["limit"].value)
+                limit = "-%s" % toInt(form["limit"].value)
             except:
                 pass
-        svnLog = os.popen("svn log %s%s" % (source, limit))
-        parsedLog = parseRawLog(svnLog)
-        formattedLog = formatLog(parsedLog)
-        print document % (title, identifier, identifier, title + " Tracker", "", "", formattedLog)
+        log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s" % (limit))))
+        print document % (title, title + " Tracker", "", log)
     else:
         #
         # DIFF
         #
-        diff = formatDiff(getDiff(source, revFrom, revTo, identifier))
+        context = "10"
+        if "context" in form:
+            try:
+                context = str(toInt(form["context"].value))
+            except:
+                pass
+        context = "--unified=%s" % context
+
+        gitFrom = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revFrom)).read()
+        gitTo = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revTo)).read()
+
+        log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s..%s" % (gitFrom, gitTo))))
+
+        diff = formatDiff(cgi.escape(os.popen("git --git-dir=html-mirror/.git diff %s %s %s -- source" % (gitFrom, gitTo, context)).read()))
         markuptitle = "<a href=" + url + ">" + title + " Tracker" + "</a>"
         bugzillaComponent = urllib.quote(bugzillaComponent, "")
         bugFiler = """<p><a href=https://www.w3.org/Bugs/Public/enter_bug.cgi?product=WHATWG&component=%s>File a bug</a></p>
-  <script src=http://resources.whatwg.org/file-bug.js async></script>""" % (bugzillaComponent)
+  <script src=//resources.whatwg.org/file-bug.js async></script>""" % (bugzillaComponent)
         try:
             # This fails if there is no diff -- hack
-            revTo = getNumber(diff, 2)
-            svnLog = os.popen(getLogCommand(source, revFrom, revTo))
-            parsedLog = parseRawLog(svnLog)
-            formattedLog = formatLog(parsedLog)
             result = """%s
   %s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><a href="?from=%s&amp;to=%s" rel=prev>Previous</a> | <a href="?from=%s&amp;to=%s" rel=next>Next</a>
-  <p><input type="button" value="Prefill From field for next time!" onclick="setFrom(%s)">""" % (bugFiler, formattedLog, diff, revFrom-1, revFrom, revTo, revTo+1, revTo)
+  <p><a href=?from=%s rel=prev>Previous</a> | <a href=?from=%s rel=next>Next</a>""" % (bugFiler, log, diff, revFrom-1, revFrom+1)
 
             # Short URL
             shorturlmarkup = ""
@@ -353,6 +313,10 @@ def startFormatting(title, identifier, url, source, bugzillaComponent):
                     shorturl += str(revFrom) + "-" + str(revTo)
                 shorturlmarkup = """<p>Short URL: <code><a href="%s">%s</a></code>\n  """ % (shorturl, shorturl)
             shorturlmarkup += result
-            print document % (title, identifier, identifier, markuptitle, revFrom, revTo, shorturlmarkup)
+            print document % (title, markuptitle, revFrom, shorturlmarkup)
         except:
-            print document % (title, identifier, identifier, markuptitle, revFrom, "", "No result.")
+            print document % (title, markuptitle, revFrom, "No result.")
+
+if __name__ == "__main__":
+    startFormatting("HTML Standard", "/tools/web-apps-tracker", "HTML")
+
