@@ -92,7 +92,7 @@ def getRevisionData(revision):
     changes = "<br>".join(revChanges["changes"])
 
     # TODO: Implement the source stuff to work with links
-    link = "?from=%s" % (str(toInt(number) - 1))
+    link = "/r/%s" % (number)
 
     bug = ""
     if revChanges["bug"]:
@@ -205,11 +205,6 @@ def startFormatting(title, url, bugzillaComponent):
    function readCookie(name) { return localStorage["tracker-" + name] }
    function setFieldValue(idName, n) { document.getElementById(idName).value = n }
    function getFieldValue(idName) { return document.getElementById(idName).value }
-   function setFrom(n) {
-     setCookie("from", n)
-     setFieldValue("from", n)
-     setFieldValue("to", "")
-   }
 
    function showEdits() { return document.getElementById("editorial").checked }
    function updateEditorial() {
@@ -223,20 +218,11 @@ def startFormatting(title, url, bugzillaComponent):
   <h1>%s</h1>
   <form>
    <fieldset>
-    <legend>Diff</legend>
-    <label>SVN: <input id=from type=number min=1 value="%s" name=from required></label>
-    <input type=submit value="Generate diff">
-   </fieldset>
-  </form>
-  <form>
-   <fieldset>
     <legend>Filter</legend>
-    <label class="editorial">Show editorial changes <input type="checkbox" id="editorial" checked="" onchange="updateEditorial()"></label>
+    <label class=editorial>Show editorial changes <input type=checkbox id=editorial checked onchange=updateEditorial()></label>
    </fieldset>
   </form>
   <script>
-   if(getFieldValue("from") == "" && readCookie("from") != null)
-     setFrom(readCookie("from"))
    if(readCookie("editorial") == "editorial") {
      document.getElementById("editorial").checked = false
      updateEditorial()
@@ -251,10 +237,10 @@ def startFormatting(title, url, bugzillaComponent):
     os.environ["TZ"] = "" # Set time zone to UTC. Kinda hacky, but works :-)
     form = cgi.FieldStorage()
 
-    if "from" in form:
+    if "to" in form:
         try:
-            revFrom = toInt(form["from"].value)
-            revTo = revFrom + 1
+            revTo = toInt(form["to"].value)
+            revFrom = revTo - 1
             showDiff = True
         except:
             pass
@@ -273,7 +259,7 @@ def startFormatting(title, url, bugzillaComponent):
             except:
                 pass
         log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s" % (limit))))
-        print document % (title, title + " Tracker", "", log)
+        print document % (title, title + " Tracker", log)
     else:
         #
         # DIFF
@@ -296,27 +282,19 @@ def startFormatting(title, url, bugzillaComponent):
         bugzillaComponent = urllib.quote(bugzillaComponent, "")
         bugFiler = """<p><a href=https://www.w3.org/Bugs/Public/enter_bug.cgi?product=WHATWG&component=%s>File a bug</a></p>
   <script src=//resources.whatwg.org/file-bug.js async></script>""" % (bugzillaComponent)
-        try:
+        if diff:
             # This fails if there is no diff -- hack
             result = """%s
   %s
   <pre id="diff"><samp>%s</samp></pre>
-  <p><a href=?from=%s rel=prev>Previous</a> | <a href=?from=%s rel=next>Next</a>""" % (bugFiler, log, diff, revFrom-1, revFrom+1)
+  <p><a href=/r/%s rel=prev>Previous</a> | <a href=/r/%s rel=next>Next</a>""" % (bugFiler, log, diff, revTo-1, revTo+1)
 
             # Short URL
-            shorturlmarkup = ""
-            if title == "HTML Standard":
-                shorturl = "http://html5.org/r/"
-                if revTo - revFrom == 1:
-                    shorturl += str(revTo)
-                else:
-                    shorturl += str(revFrom) + "-" + str(revTo)
-                shorturlmarkup = """<p>Short URL: <code><a href="%s">%s</a></code>\n  """ % (shorturl, shorturl)
-            shorturlmarkup += result
-            print document % (title, markuptitle, revFrom, shorturlmarkup)
-        except:
-            print document % (title, markuptitle, revFrom, "No result.")
+            shorturl = "http://html5.org/r/" + str(revTo)
+            shorturlmarkup = """<p>Short URL: <code><a href="%s">%s</a></code>\n  """ % (shorturl, shorturl)
+            print document % (title, markuptitle, shorturlmarkup + result)
+        else:
+            print document % (title, markuptitle, "No result.")
 
 if __name__ == "__main__":
     startFormatting("HTML Standard", "/tools/web-apps-tracker", "HTML")
-
