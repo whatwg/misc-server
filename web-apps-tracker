@@ -258,7 +258,7 @@ def startFormatting(title, url, bugzillaComponent):
                 limit = "-%s" % toInt(form["limit"].value)
             except:
                 pass
-        log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s" % (limit))))
+        log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s -- source" % (limit))))
         print document % (title, title + " Tracker", log)
     else:
         #
@@ -282,17 +282,12 @@ def startFormatting(title, url, bugzillaComponent):
         bugzillaComponent = urllib.quote(bugzillaComponent, "")
         bugFiler = """<p><a href=https://www.w3.org/Bugs/Public/enter_bug.cgi?product=WHATWG&component=%s>File a bug</a></p>
   <script src=//resources.whatwg.org/file-bug.js async></script>""" % (bugzillaComponent)
-        if diff:
-            # This fails if there is no diff -- hack
+        if log:
             result = """%s
   %s
   <pre id="diff"><samp>%s</samp></pre>
   <p><a href=/r/%s rel=prev>Previous</a> | <a href=/r/%s rel=next>Next</a>""" % (bugFiler, log, diff, revTo-1, revTo+1)
-
-            # Short URL
-            shorturl = "http://html5.org/r/" + str(revTo)
-            shorturlmarkup = """<p>Short URL: <code><a href="%s">%s</a></code>\n  """ % (shorturl, shorturl)
-            print document % (title, markuptitle, shorturlmarkup + result)
+            print document % (title, markuptitle, result)
         else:
             print document % (title, markuptitle, "No result.")
 
