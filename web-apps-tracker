@@ -88,7 +88,7 @@ def getRevisionData(revision):
     # TODO: fix the classAttr and titleAttr to only return if non-empty
     classAttr = " class=\"%s\"" % " ".join(revChanges["classes"])
     titleAttr = " title=\"%s\"" % ", ".join([title.replace("-", " ").title() for title in revChanges["classes"] if title in titleClasses])
-    icons = "".join([("<img src=/tools/icons/%s alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in revChanges["classes"] if class_ in iconClasses])
+    icons = "".join([("<img width=16 height=16 src=/tools/icons/%s alt=\"[%s]\"> ") % (class_, class_.replace("-", " ").title()) for class_ in revChanges["classes"] if class_ in iconClasses])
     changes = "<br>".join(revChanges["changes"])
 
     # TODO: Implement the source stuff to work with links
