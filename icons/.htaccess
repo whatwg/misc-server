@@ -1,3 +1,6 @@
-<FilesMatch "[a-z-]">
+<FilesMatch "(chrome|gecko|google-gears|internet-explorer|opera|webkit)">
  ForceType image/png
+</FilesMatch>
+<FilesMatch "(authors|conformance-checkers|tools)">
+ ForceType image/svg+xml
 </FilesMatch>
