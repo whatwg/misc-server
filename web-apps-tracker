@@ -272,8 +272,8 @@ def startFormatting(title, url, bugzillaComponent):
                 pass
         context = "--unified=%s" % context
 
-        gitFrom = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revFrom)).read()
-        gitTo = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revTo)).read()
+        gitFrom = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: https://svn.whatwg.org/webapps@%s ' --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revFrom, revFrom)).read()
+        gitTo = os.popen("git --git-dir=html-mirror/.git log --grep='git-svn-id: https://svn.whatwg.org/webapps@%s ' --grep='git-svn-id: http://svn.whatwg.org/webapps@%s ' --format=format:%%H" % (revTo, revTo)).read()
 
         log = formatLog(parseRawLog(os.popen("git --git-dir=./html-mirror/.git log --format=format:%%ci%%n%%B %s..%s" % (gitFrom, gitTo))))
 
