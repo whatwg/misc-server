@@ -292,4 +292,10 @@ def startFormatting(title, url, bugzillaComponent):
             print document % (title, markuptitle, "No result.")
 
 if __name__ == "__main__":
-    startFormatting("HTML Standard", "/tools/web-apps-tracker", "HTML")
+    id = re.match(r"^/tools/web-apps-tracker\?from=\d+&to=(\d+)$", os.environ["REQUEST_URI"])
+    if id:
+        print "Status: 301"
+        print "Location: https://html5.org/r/" + id.group(1)
+        print
+    else:
+        startFormatting("HTML Standard", "/tools/web-apps-tracker", "HTML")
