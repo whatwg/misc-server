@@ -42,6 +42,7 @@ def parseLogLine(logInfo):
         "i": "internet-explorer",
         "o": "opera",
         "w": "webkit",
+        "b": "browsers",
         "r": "google-gears",
         "t": "tools",
         "0": "draft-content",
@@ -53,6 +54,7 @@ def parseLogLine(logInfo):
     classes = []
     bug = None
     for line in logInfo:
+        line = re.sub(r'^\[([^\]]*)giow([^\]]*)\]', r'[\1b\2]', line)
         if line.startswith("Fixing http://www.w3.org/Bugs/Public/show_bug.cgi?id="):
             bug = line[53:]
         elif line.startswith("Fixing https://www.w3.org/Bugs/Public/show_bug.cgi?id="):
@@ -81,7 +83,7 @@ def getRevisionData(revision):
     # parse revision changes
     revChanges = parseLogLine(revision["changes"])
 
-    iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "google-gears", "tools"]
+    iconClasses = ["authors", "conformance-checkers", "gecko", "internet-explorer", "opera", "webkit", "browsers", "google-gears", "tools"]
     titleClasses = ["editorial", "draft-content", "stable-draft", "implemented", "stable"]
 
     # Get stuff from the changes line(s)
