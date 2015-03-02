@@ -218,6 +218,7 @@ def startFormatting(title, url, bugzillaComponent):
  </head>
  <body>
   <h1>%s</h1>
+  <p>See it live: <a href=https://html.spec.whatwg.org/multipage/>HTML Standard</a>.
   <form>
    <fieldset>
     <legend>Filter</legend>
