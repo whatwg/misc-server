@@ -219,6 +219,7 @@ def startFormatting(title, url, bugzillaComponent):
  <body>
   <h1>%s</h1>
   <p>See it live: <a href=https://html.spec.whatwg.org/multipage/>HTML Standard</a>.
+  <p>Also see: <a href=https://github.com/ResponsiveImagesCG/picture-element/commits/gh-pages/source>changelog for <code>img</code>/<code>picture</code>/<code>srcset</code></a>.
   <form>
    <fieldset>
     <legend>Filter</legend>
