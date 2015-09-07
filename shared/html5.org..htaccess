@@ -1,0 +1,1 @@
+Header set Strict-Transport-Security "max-age=31415926; includeSubDomains; preload" env=HTTPS
