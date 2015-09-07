@@ -8767,12 +8767,12 @@ revs = {
 if __name__ == "__main__":
     # Redirect to github
     id = re.match(r"^/r/(\d+)$", os.environ["REQUEST_URI"])
-    if !id:
+    if not id:
         id = re.match(r"^/tools/web-apps-tracker\?from=\d+&to=(\d+)$", os.environ["REQUEST_URI"])
     if id and id.group(1) in revs:
         url = "https://github.com/whatwg/html/commit/" + revs[id.group(1)]
     else:
-        url = "https://github.com/whatwg/html/commits/"
+        url = "https://github.com/whatwg/html/commits"
     print "Status: 301"
     print "Location: " + url
     print
