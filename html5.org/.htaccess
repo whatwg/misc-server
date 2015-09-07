@@ -1,0 +1,10 @@
+AddDefaultCharset utf-8
+Options -Indexes
+DirectoryIndex index.htm index.xht
+Redirect /complete https://html.spec.whatwg.org/
+Redirect /spec https://html.spec.whatwg.org/multipage/
+
+RewriteEngine On
+RewriteRule ^r/(\d+)$ /tools/web-apps-tracker?to=$1
+RewriteCond %{QUERY_STRING} &amp;
+RewriteRule ^(.*) - [F]
