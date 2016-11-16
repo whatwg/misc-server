@@ -1,3 +1,7 @@
 Header set Access-Control-Allow-Origin *
 Header set Strict-Transport-Security "max-age=31415926; includeSubDomains" env=HTTPS
 AddOutputFilterByType DEFLATE application/javascript application/json text/css text/html text/plain
+
+Options +Indexes
+IndexOptions FancyIndexing
+IndexOrderDefault Descending Date
