@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+adduser --gecos "" admin
+adduser admin sudo

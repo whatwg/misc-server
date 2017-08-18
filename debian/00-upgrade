@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+apt-get update
+apt-get upgrade
+apt-get autoremove
+dpkg-reconfigure tzdata
