@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+apt-get install apache2
+a2disconf *
+a2dismod *
+a2dissite *
+
+a2enmod rewrite
+
+cp apache/http-to-https.conf /etc/apache2/sites-available/
+a2enside http-to-https
+
+service apache2 reload
