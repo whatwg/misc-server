@@ -1,0 +1,7 @@
+#!/bin/bash -e
+
+apt-get install certbot python-certbot-apache
+
+for domain in `cat DOMAINS`; do
+ certbot certonly -n --apache --agree-tos -m admin@whatwg.org -d $domain
+done
