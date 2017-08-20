@@ -5,9 +5,11 @@ apt-get install openssh-server
 read -p "ssh password login will be disabled, press enter to continue"
 
 cat > /etc/ssh/sshd_config <<EOF
+UsePAM yes
 ChallengeResponseAuthentication no
 PasswordAuthentication no
 PrintMotd no
+AcceptEnv LANG LC_*
 EOF
 
 service ssh restart
