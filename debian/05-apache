@@ -1,13 +1,12 @@
 #!/bin/bash -e
 
 apt-get install apache2
-a2disconf *
-a2dismod *
-a2dissite *
 
 a2enmod rewrite
 
+# a2dissite doesn't work if nothing is enabled
+rm /etc/apache2/sites-enabled/*
 cp apache/http-to-https.conf /etc/apache2/sites-available/
-a2enside http-to-https
+a2ensite http-to-https
 
 service apache2 reload
