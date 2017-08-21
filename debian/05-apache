@@ -3,6 +3,7 @@
 apt-get install apache2
 
 a2enmod rewrite
+a2enmod ssl
 
 # a2dissite doesn't work if nothing is enabled
 rm /etc/apache2/sites-enabled/*
