@@ -7,7 +7,6 @@ for domain in `cat DOMAINS`; do
  a2ensite $domain || :
 done
 
-# TODO: set up initial deploy and auto deploy of sites.
-# For books and figures, just git clone them.
+# TODO: set up initial deploy of the sites.
 
 service apache2 reload
