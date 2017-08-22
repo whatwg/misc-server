@@ -11,4 +11,7 @@ rm /etc/apache2/sites-enabled/*
 cp apache/http-to-https.conf /etc/apache2/sites-available/
 a2ensite http-to-https
 
+cp apache/zz_local.conf /etc/apache2/conf-available/
+a2enconf zz_local
+
 service apache2 reload
