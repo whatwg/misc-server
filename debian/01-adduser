@@ -1,4 +1,18 @@
 #!/bin/bash -e
 
-adduser --gecos "" admin
-adduser admin sudo
+adduser --gecos "" --disabled-password deploy || :
+
+cat ADMINS | while read user key; do
+    adduser --gecos "" --disabled-password $user || continue
+
+    # ssh
+    mkdir /home/$user/.ssh/
+    chmod 0700 /home/$user/.ssh/
+    echo $key > /home/$user/.ssh/authorized_keys
+    chmod 0600 /home/$user/.ssh/authorized_keys
+    chown -R $user:$user /home/$user/.ssh/
+
+    # sudo
+    echo "$user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$user
+    chmod 0440 /etc/sudoers.d/$user
+done
