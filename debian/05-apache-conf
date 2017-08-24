@@ -14,4 +14,8 @@ a2ensite http-to-https
 cp apache/zz_local.conf /etc/apache2/conf-available/
 a2enconf zz_local
 
-service apache2 reload
+chown -R deploy:deploy /var/www
+rm -rf /var/www/html
+
+apache2ctl configtest
+apache2ctl restart

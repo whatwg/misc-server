@@ -7,6 +7,5 @@ for domain in `cat DOMAINS`; do
  a2ensite $domain || :
 done
 
-# TODO: set up initial deploy of the sites.
-
-service apache2 reload
+apache2ctl configtest
+apache2ctl restart
