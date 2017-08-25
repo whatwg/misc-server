@@ -4,8 +4,8 @@
 rm -f /etc/apache2/sites-enabled/*
 cp apache/sites/*.conf /etc/apache2/sites-available/
 
-for domain in `cat DOMAINS`; do
- a2ensite $domain || :
+for domain in `cat DOMAINS | tr , ' '`; do
+    a2ensite $domain || :
 done
 
 apache2ctl configtest
