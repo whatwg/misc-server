@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 # a2dissite doesn't work if nothing is enabled
-cp apache/*.org.conf /etc/apache2/sites-available/
+rm -f /etc/apache2/sites-enabled/*
+cp apache/sites/*.conf /etc/apache2/sites-available/
 
 for domain in `cat DOMAINS`; do
  a2ensite $domain || :
