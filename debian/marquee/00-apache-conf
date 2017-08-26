@@ -1,10 +1,17 @@
 #!/bin/bash -e
 
+if [ ! -f /etc/ssl/certs/dhparam.pem ]; then
+    openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+fi
+
 apt-get install apache2
 
 a2enmod rewrite
 a2enmod ssl
 a2enmod headers
+
+# a2dissite doesn't work if nothing is enabled
+rm -f /etc/apache2/sites-enabled/*
 
 cp apache/conf/*.conf /etc/apache2/conf-available/
 a2enconf http
