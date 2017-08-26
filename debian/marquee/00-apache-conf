@@ -1,9 +1,5 @@
 #!/bin/bash -e
 
-if [ ! -f /etc/ssl/certs/dhparam.pem ]; then
-    openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-fi
-
 apt-get install apache2
 
 a2enmod rewrite
