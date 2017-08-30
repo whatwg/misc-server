@@ -1,6 +1,7 @@
 books.idea.whatwg.org
 books.spec.whatwg.org
 c.whatwg.org
+compat.spec.whatwg.org
 developer.whatwg.org
 developers.whatwg.org
 dom.spec.whatwg.org
@@ -15,6 +16,7 @@ images.whatwg.org
 javascript.spec.whatwg.org
 mediasession.spec.whatwg.org
 n.whatwg.org
+quirks.spec.whatwg.org
 spec.whatwg.org,specs.whatwg.org
 svn.whatwg.org
 validator.whatwg.org
