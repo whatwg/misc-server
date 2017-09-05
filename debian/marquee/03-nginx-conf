@@ -12,5 +12,5 @@ cp -p nginx/conf/whatwg-headers.conf /etc/nginx/
 chown -R deploy:deploy /var/www
 rm -rf /var/www/html
 
-/usr/sbin/nginx -t
-systemctl start nginx.service
+nginx -t
+systemctl restart nginx.service

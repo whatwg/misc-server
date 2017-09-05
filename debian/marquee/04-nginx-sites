@@ -7,5 +7,5 @@ for domain in `cat DOMAINS | tr , ' '`; do
     ln -s /etc/nginx/sites-available/$domain.conf /etc/nginx/sites-enabled/
 done
 
-/usr/sbin/nginx -t
+nginx -t
 systemctl restart nginx.service
