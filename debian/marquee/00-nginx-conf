@@ -14,4 +14,4 @@ rm -rf /var/www/html
 mkdir -p /var/www/http/.well-known/acme-challenge
 
 nginx -t
-systemctl restart nginx.service
+systemctl reload-or-restart nginx.service

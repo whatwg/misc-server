@@ -8,4 +8,4 @@ for domain in `cat DOMAINS | tr , ' '`; do
 done
 
 nginx -t
-systemctl restart nginx.service
+systemctl reload-or-restart nginx.service
