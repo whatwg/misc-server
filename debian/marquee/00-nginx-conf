@@ -11,5 +11,7 @@ cp nginx/conf/whatwg-headers.conf /etc/nginx/
 chown -R deploy:deploy /var/www
 rm -rf /var/www/html
 
+mkdir -p /var/www/http/.well-known/acme-challenge
+
 nginx -t
 systemctl restart nginx.service
