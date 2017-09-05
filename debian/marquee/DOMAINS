@@ -17,6 +17,7 @@ images.whatwg.org
 infra.spec.whatwg.org
 javascript.spec.whatwg.org
 mediasession.spec.whatwg.org
+mimesniff.spec.whatwg.org
 n.whatwg.org
 notifications.spec.whatwg.org
 quirks.spec.whatwg.org
@@ -25,4 +26,5 @@ spec.whatwg.org,specs.whatwg.org
 svn.whatwg.org
 validator.whatwg.org
 webvtt.spec.whatwg.org
+xhr.spec.whatwg.org
 xn--7ca.whatwg.org
