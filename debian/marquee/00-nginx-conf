@@ -8,10 +8,10 @@ cp nginx/conf/http.conf /etc/nginx/conf.d/
 cp nginx/conf/whatwg.conf /etc/nginx/
 cp nginx/conf/whatwg-headers.conf /etc/nginx/
 
+mkdir -p /var/www/http/.well-known/acme-challenge
+
 chown -R deploy:deploy /var/www
 rm -rf /var/www/html
-
-mkdir -p /var/www/http/.well-known/acme-challenge
 
 nginx -t
 systemctl reload-or-restart nginx.service
