@@ -2,12 +2,11 @@
 
 apt install nginx
 
-# a2dissite doesn't work if nothing is enabled
 rm -f /etc/nginx/sites-enabled/*
 
-cp -p nginx/conf/http.conf /etc/nginx/conf.d/
-cp -p nginx/conf/whatwg.conf /etc/nginx/
-cp -p nginx/conf/whatwg-headers.conf /etc/nginx/
+cp nginx/conf/http.conf /etc/nginx/conf.d/
+cp nginx/conf/whatwg.conf /etc/nginx/
+cp nginx/conf/whatwg-headers.conf /etc/nginx/
 
 chown -R deploy:deploy /var/www
 rm -rf /var/www/html
