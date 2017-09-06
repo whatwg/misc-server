@@ -1,17 +1,14 @@
 books.idea.whatwg.org
 books.spec.whatwg.org
-c.whatwg.org
 compat.spec.whatwg.org
-developer.whatwg.org
-developers.whatwg.org
 dom.spec.whatwg.org
 domparsing.spec.whatwg.org
 fetch.spec.whatwg.org
 figures.idea.whatwg.org
 figures.spec.whatwg.org
 fullscreen.spec.whatwg.org
-help.whatwg.org
 html-differences.whatwg.org
+html.spec.whatwg.org,c.whatwg.org,developer.whatwg.org,developers.whatwg.org,help.whatwg.org,xn--7ca.whatwg.org
 idea.whatwg.org
 images.whatwg.org
 infra.spec.whatwg.org
@@ -27,4 +24,3 @@ svn.whatwg.org
 validator.whatwg.org
 webvtt.spec.whatwg.org
 xhr.spec.whatwg.org
-xn--7ca.whatwg.org
