@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+apt install certbot
+
 for domains in `cat DOMAINS`; do
     certbot certonly -n --agree-tos --webroot -m admin@whatwg.org -d $domains -w /var/www/http
 done
