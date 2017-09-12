@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 apt install nginx
+apt install libnginx-mod-http-fancyindex
 
 rm -f /etc/nginx/sites-enabled/*
 
