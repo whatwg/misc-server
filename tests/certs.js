@@ -82,7 +82,7 @@ async function test() {
     } catch (err) {
       status = err;
     }
-    if (status != 'OK')
+    if (status !== 'OK')
       ok = false
     console.log(domain, status)
   }
