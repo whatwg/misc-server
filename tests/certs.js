@@ -1,10 +1,10 @@
-'use strict'
+'use strict';
 
-const https = require('https')
+const https = require('https');
 
 // Let's Encrypt should renew when 30 days remain, so if it's less than 25
 // something is wrong with certificate automation.
-const MAX_DAYS = 25
+const MAX_DAYS = 25;
 
 const DOMAINS = [
   'blog.whatwg.org',
@@ -51,44 +51,47 @@ const DOMAINS = [
   'www.whatwg.org',
   'xhr.spec.whatwg.org',
   'xn--7ca.whatwg.org',
-]
+];
 
 function getCertificate(domain) {
   return new Promise((resolve, reject) => {
     const req = https.request(`https://${domain}`, res => {
-      resolve(res.connection.getPeerCertificate())
-    })
-    req.on('error', err => reject(err))
-    req.end()
-  })
+      resolve(res.connection.getPeerCertificate());
+    });
+    req.on('error', err => reject(err));
+    req.end();
+  });
 }
 
 async function test() {
-  const now = Date.now()
+  const now = Date.now();
 
   // start all the requests in parallel
-  const requests = DOMAINS.map(domain => [domain, getCertificate(domain)])
+  const requests = DOMAINS.map(domain => [domain, getCertificate(domain)]);
 
-  let ok = true
+  let ok = true;
 
   for (const [domain, request] of requests) {
-    let status = 'OK'
+    let status = 'OK';
     try {
-      const cert = await request
-      const valid_to = Date.parse(cert.valid_to)
-      const days_left = (valid_to - now) / (24 * 3600 * 1000)
-      if (days_left < MAX_DAYS)
-        status = `cert expires in less than ${MAX_DAYS} days: ${cert.valid_to}`
+      const cert = await request;
+      const valid_to = Date.parse(cert.valid_to);
+      const days_left = (valid_to - now) / (24 * 3600 * 1000);
+      if (days_left < MAX_DAYS) {
+        status = `cert expires in less than ${MAX_DAYS} days: ${cert.valid_to}`;
+      }
     } catch (err) {
       status = err;
     }
-    if (status !== 'OK')
-      ok = false
-    console.log(domain, status)
+    if (status !== 'OK') {
+      ok = false;
+    }
+    console.log(domain, status);
   }
 
-  if (!ok)
-    process.exit(1)
+  if (!ok) {
+    process.exit(1);
+  }
 }
 
-test()
+test();
