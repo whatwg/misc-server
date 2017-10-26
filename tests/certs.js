@@ -1,4 +1,5 @@
-const fs = require('fs')
+'use strict'
+
 const https = require('https')
 
 // Let's Encrypt should renew when 30 days remain, so if it's less than 25

@@ -1,5 +1,11 @@
-#!/bin/sh -e
+#!/bin/bash
+set -o errexit
+set -o nounset
+set -o pipefail
 
-for t in tests/*; do
-    node "$t"
+cd tests
+for test in *.js; do
+    echo "Running $test"
+    node "$test"
+    echo
 done
