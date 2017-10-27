@@ -4,7 +4,7 @@ set -o nounset
 set -o pipefail
 
 cd tests
-npm install node-fetch
+npm install
 
 OK=true
 
