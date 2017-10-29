@@ -1,6 +1,7 @@
 branches:
   only:
     - master
+    - mocha-tests
 language: node_js
 node_js: stable
 before_install:
