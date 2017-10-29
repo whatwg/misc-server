@@ -1,17 +1,18 @@
 'use strict';
 
+const assert = require('assert');
 const fetch = require('node-fetch');
 
 // The following TODOs should all be resolved by
 // https://github.com/whatwg/misc-server/issues/7.
 
 // arrays of [url to fetch, HTTP status, location header, keep /foo?]
-const TEST_DATA = [
+
+const HTTP_TESTS = [
   // http -> https redirects
   ['http://blog.whatwg.org/', 301, 'https://blog.whatwg.org/', 'keep'],
   ['http://books.idea.whatwg.org/', 301, 'https://books.idea.whatwg.org/', 'keep'],
   ['http://books.spec.whatwg.org/', 301, 'https://books.spec.whatwg.org/', 'keep'],
-  // build.whatwg.org isn't avilable over HTTP
   ['http://c.whatwg.org/', 301, 'https://c.whatwg.org/', 'keep'],
   ['http://compat.spec.whatwg.org/', 301, 'https://compat.spec.whatwg.org/', 'keep'],
   ['http://console.spec.whatwg.org/', 301, 'https://console.spec.whatwg.org/', 'keep'],
@@ -52,7 +53,9 @@ const TEST_DATA = [
   ['http://www.whatwg.org/foo', 404], // TODO
   ['http://xhr.spec.whatwg.org/', 301, 'https://xhr.spec.whatwg.org/', 'keep'],
   ['http://xn--7ca.whatwg.org/', 301, 'https://xn--7ca.whatwg.org/', 'keep'],
-  // https -> https redirects (the interesting ones)
+];
+
+const HTTPS_TESTS = [
   ['https://books.spec.whatwg.org/', 302, 'https://books.idea.whatwg.org/', 'keep'],
   ['https://c.whatwg.org/', 301, 'https://html.spec.whatwg.org/', 'keep'],
   ['https://developer.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'keep'],
@@ -140,6 +143,23 @@ const TEST_DATA = [
   ['https://xn--7ca.whatwg.org/', 301, 'https://html.spec.whatwg.org/', 'keep'],
 ];
 
+function test(url, status, location) {
+  it(url, async function() {
+    const response = await fetch(url, { redirect: 'manual' });
+
+    assert.strictEqual(response.status, status);
+
+    let actual_location = response.headers.get('location');
+    // TODO: remove this workaround when whatwg.org is no longer served by
+    // Apache. (The redirect directive can add an extra slash.)
+    if (url.startsWith('https://whatwg.org/') &&
+        actual_location && actual_location.endsWith('//foo')) {
+      actual_location = actual_location.replace(/\/\/foo$/, '/foo');
+    }
+    assert.strictEqual(actual_location, location);
+  });
+}
+
 function appendFoo(url) {
   if (url.endsWith('/')) {
     return url + 'foo';
@@ -147,48 +167,21 @@ function appendFoo(url) {
   return url + '/foo';
 }
 
-async function test() {
-  const tests = [];
-  for (const [url, status, location, trailing] of TEST_DATA) {
-    tests.push([url, status, location || null])
-    if (trailing !== undefined) {
-      console.assert(trailing === 'keep' || trailing === 'drop')
-      tests.push([appendFoo(url), status,
-                  trailing === 'keep' ? appendFoo(location) : location]);
-    }
-  }
-
-  let ok = true;
-
-  for (const [url, expected_status, expected_location] of tests) {
-    const response = await fetch(url, { redirect: 'manual' });
-
-    const actual_status = response.status;
-    let actual_location = response.headers.get('location');
-    // TODO: remove this workaround when Apache redirect is no longer used
-    // anywhere. It can add an extra slash...
-    if (url.startsWith('https://whatwg.org/') &&
-        actual_location && actual_location.endsWith('//foo')) {
-      actual_location = actual_location.replace(/\/\/foo$/, '/foo');
-    }
-
-    let msg = 'OK'
-    if (actual_status !== expected_status) {
-      msg = `FAIL (expected HTTP status ${expected_status}, got ${actual_status})`;
-    } else if (actual_location !== expected_location) {
-      msg = `FAIL (expected location header ${expected_location}, got ${actual_location})`;
-    }
-
-    if (msg !== 'OK') {
-      ok = false;
-    }
-
-    console.log(url, msg);
-  }
-
-  if (!ok) {
-    process.exit(1);
+function generateTests([url, status, location, trailing]) {
+  test(url, status, location || null);
+  if (trailing !== undefined) {
+    assert(trailing === 'keep' || trailing === 'drop');
+    test(appendFoo(url), status,
+         trailing === 'keep' ? appendFoo(location) : location);
   }
 }
 
-test();
+describe('redirects', function() {
+  describe('HTTP (to HTTPS)', function() {
+    HTTP_TESTS.map(generateTests);
+  });
+
+  describe('HTTPS (the good stuff)', function() {
+    HTTPS_TESTS.map(generateTests);
+  });
+});
