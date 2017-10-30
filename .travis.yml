@@ -3,5 +3,5 @@ branches:
     - master
 language: node_js
 node_js: stable
-script:
-  - ./run-tests.sh
+before_install:
+  - cd test

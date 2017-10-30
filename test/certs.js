@@ -4,7 +4,7 @@ const https = require('https');
 
 // Let's Encrypt should renew when 30 days remain, so if it's less than 25
 // something is wrong with certificate automation.
-const MAX_DAYS = 25;
+const MIN_DAYS = 25;
 
 const DOMAINS = [
   'blog.whatwg.org',
@@ -63,35 +63,17 @@ function getCertificate(domain) {
   });
 }
 
-async function test() {
+describe('certificate expiry date', function() {
   const now = Date.now();
 
-  // start all the requests in parallel
-  const requests = DOMAINS.map(domain => [domain, getCertificate(domain)]);
-
-  let ok = true;
-
-  for (const [domain, request] of requests) {
-    let status = 'OK';
-    try {
-      const cert = await request;
+  for (const domain of DOMAINS) {
+    specify(domain, async function() {
+      const cert = await getCertificate(domain);
       const valid_to = Date.parse(cert.valid_to);
       const days_left = (valid_to - now) / (24 * 3600 * 1000);
-      if (days_left < MAX_DAYS) {
-        status = `cert expires in less than ${MAX_DAYS} days: ${cert.valid_to}`;
+      if (days_left < MIN_DAYS) {
+        throw new Error(`cert expires in less than ${MIN_DAYS} days: ${cert.valid_to}`);
       }
-    } catch (err) {
-      status = err;
-    }
-    if (status !== 'OK') {
-      ok = false;
-    }
-    console.log(domain, status);
+    });
   }
-
-  if (!ok) {
-    process.exit(1);
-  }
-}
-
-test();
+});

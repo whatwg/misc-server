@@ -1,17 +1,18 @@
 'use strict';
 
+const assert = require('assert');
 const fetch = require('node-fetch');
 
 // The following TODOs should all be resolved by
 // https://github.com/whatwg/misc-server/issues/7.
 
 // arrays of [url to fetch, HTTP status, location header, keep /foo?]
-const TEST_DATA = [
+
+const HTTP_TESTS = [
   // http -> https redirects
   ['http://blog.whatwg.org/', 301, 'https://blog.whatwg.org/', 'keep'],
   ['http://books.idea.whatwg.org/', 301, 'https://books.idea.whatwg.org/', 'keep'],
   ['http://books.spec.whatwg.org/', 301, 'https://books.spec.whatwg.org/', 'keep'],
-  // build.whatwg.org isn't avilable over HTTP
   ['http://c.whatwg.org/', 301, 'https://c.whatwg.org/', 'keep'],
   ['http://compat.spec.whatwg.org/', 301, 'https://compat.spec.whatwg.org/', 'keep'],
   ['http://console.spec.whatwg.org/', 301, 'https://console.spec.whatwg.org/', 'keep'],
@@ -52,19 +53,47 @@ const TEST_DATA = [
   ['http://www.whatwg.org/foo', 404], // TODO
   ['http://xhr.spec.whatwg.org/', 301, 'https://xhr.spec.whatwg.org/', 'keep'],
   ['http://xn--7ca.whatwg.org/', 301, 'https://xn--7ca.whatwg.org/', 'keep'],
-  // https -> https redirects (the interesting ones)
+];
+
+const HTTPS_TESTS = [
   ['https://books.spec.whatwg.org/', 302, 'https://books.idea.whatwg.org/', 'keep'],
   ['https://c.whatwg.org/', 301, 'https://html.spec.whatwg.org/', 'keep'],
   ['https://developer.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'keep'],
   ['https://developers.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'keep'],
   ['https://domparsing.spec.whatwg.org/', 302, 'https://w3c.github.io/DOM-Parsing/', 'drop'],
+  ['https://encoding.spec.whatwg.org/index-gbk.txt', 410],
   ['https://figures.spec.whatwg.org/', 302, 'https://figures.idea.whatwg.org/', 'keep'],
   ['https://forums.whatwg.org/', 301, 'https://forums.whatwg.org/bb3/index.php'],
   ['https://help.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'drop'],
+  ['https://html.spec.whatwg.org/C', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
+  ['https://html.spec.whatwg.org/complete', 301, 'https://html.spec.whatwg.org/', 'keep'],
+  ['https://html.spec.whatwg.org/complete.html', 301, 'https://html.spec.whatwg.org/'],
+  ['https://html.spec.whatwg.org/demos/offline/clock/clock.html', 301, 'https://html.spec.whatwg.org/demos/offline/clock/clock2.html'],
+  ['https://html.spec.whatwg.org/images/content-venn.png', 301, 'https://html.spec.whatwg.org/images/content-venn.svg'],
+  ['https://html.spec.whatwg.org/images/contextmenu-collapsed.png', 410],
+  ['https://html.spec.whatwg.org/images/contextmenu-expanded.png', 410],
+  ['https://html.spec.whatwg.org/images/parsing-model-overview.png', 301, 'https://html.spec.whatwg.org/images/parsing-model-overview.svg'],
+  ['https://html.spec.whatwg.org/images/sample-email-1.png', 301, 'https://html.spec.whatwg.org/images/sample-email-1.svg'],
+  ['https://html.spec.whatwg.org/images/sample-email-2.png', 301, 'https://html.spec.whatwg.org/images/sample-email-2.svg'],
+  ['https://html.spec.whatwg.org/images/sample-url.png', 301, 'https://html.spec.whatwg.org/images/sample-url.svg'],
+  ['https://html.spec.whatwg.org/index', 301, 'https://html.spec.whatwg.org/'],
+  ['https://html.spec.whatwg.org/multipage/embedded-content-0.html', 301, 'https://html.spec.whatwg.org/multipage/embedded-content.html'],
+  ['https://html.spec.whatwg.org/multipage/entities.json', 301, 'https://html.spec.whatwg.org/entities.json'],
+  ['https://html.spec.whatwg.org/multipage/images/', 301, 'https://html.spec.whatwg.org/images/'],
+  ['https://html.spec.whatwg.org/multipage/link-fixup.js', 301, 'https://html.spec.whatwg.org/link-fixup.js'],
+  ['https://html.spec.whatwg.org/multipage/scripting-1.html', 301, 'https://html.spec.whatwg.org/multipage/scripting.html'],
+  ['https://html.spec.whatwg.org/multipage/section-sql.html', 410],
+  ['https://html.spec.whatwg.org/multipage/tabular-data.html', 301, 'https://html.spec.whatwg.org/multipage/tables.html'],
   ['https://javascript.spec.whatwg.org/', 302, 'https://github.com/tc39/ecma262/labels/web%20reality', 'drop'],
   ['https://mediasession.spec.whatwg.org/', 302, 'https://wicg.github.io/mediasession/', 'drop'],
   ['https://specs.whatwg.org/', 301, 'https://spec.whatwg.org/', 'drop'],
   ['https://svn.whatwg.org/', 301, 'https://github.com/whatwg', 'drop'],
+  ['https://url.spec.whatwg.org/interop', 410],
+  ['https://url.spec.whatwg.org/reference-implementation', 410],
+  ['https://url.spec.whatwg.org/reference-implementation/liveview.html', 301, 'https://quuz.org/url/liveview.html'],
+  ['https://url.spec.whatwg.org/reference-implementation/liveview2.html', 301, 'https://quuz.org/url/liveview2.html'],
+  ['https://url.spec.whatwg.org/reference-implementation/liveview3.html', 301, 'https://quuz.org/url/liveview3.html'],
+  ['https://url.spec.whatwg.org/reference-implementation/uri-validate.html', 301, 'https://quuz.org/url/uri-validate.html'],
   ['https://validator.whatwg.org/', 301, 'https://whatwg.org/validator/', 'keep'],
   ['https://webvtt.spec.whatwg.org/', 302, 'https://w3c.github.io/webvtt/', 'keep'],
   ['https://whatwg.org/C', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
@@ -128,7 +157,7 @@ const TEST_DATA = [
   ['https://whatwg.org/specs/web-apps/current-work/webvtt.html', 301, 'https://w3c.github.io/webvtt/'],
   ['https://whatwg.org/specs/web-apps/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/specs/web-forms/tests', 301, 'https://github.com/w3c/web-platform-tests'], // TODO: 'drop'
-  ['https://whatwg.org/specs/web-workers/current-work/index', 301, 'https://html.spec.whatwg.org/multipage/workers.html'],
+  ['https://whatwg.org/specs/web-workers/current-work/', 301, 'https://html.spec.whatwg.org/multipage/workers.html'],
   ['https://whatwg.org/u', 301, 'https://url.spec.whatwg.org/'],
   ['https://whatwg.org/url', 301, 'https://url.spec.whatwg.org/'],
   ['https://whatwg.org/wf2', 301, 'https://html.spec.whatwg.org/multipage/#forms'],
@@ -140,6 +169,24 @@ const TEST_DATA = [
   ['https://xn--7ca.whatwg.org/', 301, 'https://html.spec.whatwg.org/', 'keep'],
 ];
 
+function test(url, status, location) {
+  specify(url, async function() {
+    const response = await fetch(url, { redirect: 'manual' });
+
+    assert.strictEqual(response.status, status);
+
+    let actual_location = response.headers.get('location');
+    // TODO: remove this workaround when whatwg.org and HTML are no longer
+    // served by Apache. (The redirect directive can add an extra slash.)
+    if ((url.startsWith('https://whatwg.org/') ||
+         url.startsWith('https://html.spec.whatwg.org/')) &&
+        actual_location && actual_location.endsWith('//foo')) {
+      actual_location = actual_location.replace(/\/\/foo$/, '/foo');
+    }
+    assert.strictEqual(actual_location, location);
+  });
+}
+
 function appendFoo(url) {
   if (url.endsWith('/')) {
     return url + 'foo';
@@ -147,48 +194,21 @@ function appendFoo(url) {
   return url + '/foo';
 }
 
-async function test() {
-  const tests = [];
-  for (const [url, status, location, trailing] of TEST_DATA) {
-    tests.push([url, status, location || null])
-    if (trailing !== undefined) {
-      console.assert(trailing === 'keep' || trailing === 'drop')
-      tests.push([appendFoo(url), status,
-                  trailing === 'keep' ? appendFoo(location) : location]);
-    }
-  }
-
-  let ok = true;
-
-  for (const [url, expected_status, expected_location] of tests) {
-    const response = await fetch(url, { redirect: 'manual' });
-
-    const actual_status = response.status;
-    let actual_location = response.headers.get('location');
-    // TODO: remove this workaround when Apache redirect is no longer used
-    // anywhere. It can add an extra slash...
-    if (url.startsWith('https://whatwg.org/') &&
-        actual_location && actual_location.endsWith('//foo')) {
-      actual_location = actual_location.replace(/\/\/foo$/, '/foo');
-    }
-
-    let msg = 'OK'
-    if (actual_status !== expected_status) {
-      msg = `FAIL (expected HTTP status ${expected_status}, got ${actual_status})`;
-    } else if (actual_location !== expected_location) {
-      msg = `FAIL (expected location header ${expected_location}, got ${actual_location})`;
-    }
-
-    if (msg !== 'OK') {
-      ok = false;
-    }
-
-    console.log(url, msg);
-  }
-
-  if (!ok) {
-    process.exit(1);
+function generateTests([url, status, location, trailing]) {
+  test(url, status, location || null);
+  if (trailing !== undefined) {
+    assert(trailing === 'keep' || trailing === 'drop');
+    test(appendFoo(url), status,
+         trailing === 'keep' ? appendFoo(location) : location);
   }
 }
 
-test();
+describe('redirects', function() {
+  describe('HTTP (to HTTPS)', function() {
+    HTTP_TESTS.map(generateTests);
+  });
+
+  describe('HTTPS (the good stuff)', function() {
+    HTTPS_TESTS.map(generateTests);
+  });
+});
