@@ -157,7 +157,7 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/specs/web-apps/current-work/webvtt.html', 301, 'https://w3c.github.io/webvtt/'],
   ['https://whatwg.org/specs/web-apps/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/specs/web-forms/tests', 301, 'https://github.com/w3c/web-platform-tests'], // TODO: 'drop'
-  ['https://whatwg.org/specs/web-workers/current-work/index', 301, 'https://html.spec.whatwg.org/multipage/workers.html'],
+  ['https://whatwg.org/specs/web-workers/current-work/', 301, 'https://html.spec.whatwg.org/multipage/workers.html'],
   ['https://whatwg.org/u', 301, 'https://url.spec.whatwg.org/'],
   ['https://whatwg.org/url', 301, 'https://url.spec.whatwg.org/'],
   ['https://whatwg.org/wf2', 301, 'https://html.spec.whatwg.org/multipage/#forms'],
