@@ -70,8 +70,6 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://whatwg.org/specs/web-forms/2004-12-10-call-for-comments/sample-datetime-ui-3', 'image/png'],
   ['https://whatwg.org/specs/web-forms/2004-12-10-call-for-comments/sample-multiple-editable-ui', 'image/png'],
   ['https://whatwg.org/specs/web-forms/2004-12-10-call-for-comments/xforms-implementation-diagram', 'image/png'],
-  // much more of the same...
-  /*
   ['https://whatwg.org/specs/web-forms/2005-01-28-call-for-comments/diff-2004-06-27-call-for-comments', 'text/html; charset=utf-8'],
   ['https://whatwg.org/specs/web-forms/2005-01-28-call-for-comments/diff-2004-12-10-call-for-comments', 'text/html; charset=utf-8'],
   ['https://whatwg.org/specs/web-forms/2005-01-28-call-for-comments/sample-autocompletion-ui-1', 'image/png'],
@@ -118,7 +116,6 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://whatwg.org/specs/web-forms/2005-09-01/sample-datetime-ui-3', 'image/png'],
   ['https://whatwg.org/specs/web-forms/2005-09-01/sample-multiple-editable-ui', 'image/png'],
   ['https://whatwg.org/specs/web-forms/2005-09-01/xforms-implementation-diagram', 'image/png'],
-  */
   ['https://whatwg.org/specs/web-forms/current-work/diff-2005-01-28-call-for-comments', 'text/html; charset=utf-8'],
   ['https://whatwg.org/specs/web-forms/current-work/diff-2005-04-11-call-for-comments', 'text/html; charset=utf-8'],
   ['https://whatwg.org/specs/web-forms/current-work/diff-2005-07-03', 'text/html; charset=utf-8'],
