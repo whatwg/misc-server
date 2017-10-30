@@ -5,7 +5,3 @@ language: node_js
 node_js: stable
 before_install:
   - cd test
-install:
-  - npm install
-script:
-  - npm test
