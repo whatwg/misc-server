@@ -139,7 +139,7 @@ const WITHOUT_EXTENSION_TESTS = [
 ];
 
 function test([url, expected]) {
-  it(url, async function() {
+  specify(url, async function() {
     // redirecting is a failure since we might then test the wrong server
     const response = await fetch(url, { redirect: 'manual' });
     assert.strictEqual(response.status, 200);

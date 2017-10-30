@@ -144,7 +144,7 @@ const HTTPS_TESTS = [
 ];
 
 function test(url, status, location) {
-  it(url, async function() {
+  specify(url, async function() {
     const response = await fetch(url, { redirect: 'manual' });
 
     assert.strictEqual(response.status, status);

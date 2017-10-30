@@ -67,7 +67,7 @@ describe('certificate expiry date', function() {
   const now = Date.now();
 
   for (const domain of DOMAINS) {
-    it(domain, async function() {
+    specify(domain, async function() {
       const cert = await getCertificate(domain);
       const valid_to = Date.parse(cert.valid_to);
       const days_left = (valid_to - now) / (24 * 3600 * 1000);
