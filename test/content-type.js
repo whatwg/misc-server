@@ -10,6 +10,7 @@ const EXTENSION_TESTS = [
   ['https://resources.whatwg.org/browser-logos/bb.jpg', 'image/jpeg'],
   ['https://resources.whatwg.org/dfn.js', 'application/javascript'],
   ['https://resources.whatwg.org/biblio.json', 'application/json'],
+  ['https://streams.spec.whatwg.org/demos/resources/web-animations.min.js.map', 'application/javascript'],
   ['https://resources.whatwg.org/README.md', 'text/plain'],
   ['https://resources.whatwg.org/logo.png', 'image/png'],
   ['https://resources.whatwg.org/build/deploy.sh', 'text/plain'],
@@ -21,6 +22,7 @@ const EXTENSION_TESTS = [
 ];
 
 const WITHOUT_EXTENSION_TESTS = [
+  ['https://html.spec.whatwg.org/commit-snapshots/123b42ece34482e8d21d7210eef6ce4709214207', 'text/html; charset=utf-8'],
   ['https://images.whatwg.org/CFC', 'image/png'],
   ['https://images.whatwg.org/CFI', 'image/png'],
   ['https://images.whatwg.org/REC', 'image/png'],
