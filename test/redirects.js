@@ -176,9 +176,10 @@ function test(url, status, location) {
     assert.strictEqual(response.status, status);
 
     let actual_location = response.headers.get('location');
-    // TODO: remove this workaround when whatwg.org is no longer served by
-    // Apache. (The redirect directive can add an extra slash.)
-    if (url.startsWith('https://whatwg.org/') &&
+    // TODO: remove this workaround when whatwg.org and HTML are no longer
+    // served by Apache. (The redirect directive can add an extra slash.)
+    if ((url.startsWith('https://whatwg.org/') ||
+         url.startsWith('https://html.spec.whatwg.org/')) &&
         actual_location && actual_location.endsWith('//foo')) {
       actual_location = actual_location.replace(/\/\/foo$/, '/foo');
     }
