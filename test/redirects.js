@@ -48,9 +48,9 @@ const HTTP_TESTS = [
   ['http://url.spec.whatwg.org/', 301, 'https://url.spec.whatwg.org/', 'keep'],
   ['http://validator.whatwg.org/', 301, 'https://validator.whatwg.org/', 'keep'],
   ['http://webvtt.spec.whatwg.org/', 301, 'https://webvtt.spec.whatwg.org/', 'keep'],
-  ['http://whatwg.org/', 301, 'http://www.whatwg.org/', 'keep'], // TODO
+  ['http://whatwg.org/', 301, 'https://whatwg.org/', 'keep'],
   ['http://wiki.whatwg.org/', 302, 'https://wiki.whatwg.org/', 'keep'],
-  ['http://www.whatwg.org/foo', 404], // TODO
+  ['http://www.whatwg.org/', 301, 'https://www.whatwg.org/', 'keep'],
   ['http://xhr.spec.whatwg.org/', 301, 'https://xhr.spec.whatwg.org/', 'keep'],
   ['http://xn--7ca.whatwg.org/', 301, 'https://xn--7ca.whatwg.org/', 'keep'],
 ];
@@ -147,8 +147,8 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/specs/foo', 404, null],
   ['https://whatwg.org/specs/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/specs/url/current-work', 301, 'https://url.spec.whatwg.org/', 'keep'],
-  ['https://whatwg.org/specs/vocabs', 301, 'https://html.spec.whatwg.org/multipage/microdata.html'], // TODO: 'drop'
-  ['https://whatwg.org/specs/web-apps/current-work/', 301, 'https://html.spec.whatwg.org/', 'keep'],
+  ['https://whatwg.org/specs/vocabs', 301, 'https://html.spec.whatwg.org/multipage/microdata.html', 'drop'],
+  ['https://whatwg.org/specs/web-apps/current-work/', 301, 'https://html.spec.whatwg.org/', 'drop'],
   ['https://whatwg.org/specs/web-apps/current-work/complete.html', 301, 'https://html.spec.whatwg.org/'],
   ['https://whatwg.org/specs/web-apps/current-work/complete/', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/specs/web-apps/current-work/html-a4.pdf', 301, 'https://html.spec.whatwg.org/print.pdf'],
@@ -159,7 +159,7 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/specs/web-apps/current-work/websrt.html', 301, 'https://w3c.github.io/webvtt/'],
   ['https://whatwg.org/specs/web-apps/current-work/webvtt.html', 301, 'https://w3c.github.io/webvtt/'],
   ['https://whatwg.org/specs/web-apps/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
-  ['https://whatwg.org/specs/web-forms/tests', 301, 'https://github.com/w3c/web-platform-tests'], // TODO: 'drop'
+  ['https://whatwg.org/specs/web-forms/tests', 301, 'https://github.com/w3c/web-platform-tests', 'drop'],
   ['https://whatwg.org/specs/web-workers/current-work/', 301, 'https://html.spec.whatwg.org/multipage/workers.html'],
   ['https://whatwg.org/u', 301, 'https://url.spec.whatwg.org/'],
   ['https://whatwg.org/url', 301, 'https://url.spec.whatwg.org/'],
@@ -175,14 +175,12 @@ const HTTPS_TESTS = [
 function test(url, status, location) {
   specify(url, async function() {
     const response = await fetch(url, { redirect: 'manual' });
-
     assert.strictEqual(response.status, status);
 
     let actual_location = response.headers.get('location');
-    // TODO: remove this workaround when whatwg.org and HTML are no longer
+    // TODO: remove this workaround when html.spec.whatwg.org is no longer
     // served by Apache. (The redirect directive can add an extra slash.)
-    if ((url.startsWith('https://whatwg.org/') ||
-         url.startsWith('https://html.spec.whatwg.org/')) &&
+    if (url.startsWith('https://html.spec.whatwg.org/') &&
         actual_location && actual_location.endsWith('//foo')) {
       actual_location = actual_location.replace(/\/\/foo$/, '/foo');
     }
