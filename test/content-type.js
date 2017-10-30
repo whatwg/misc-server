@@ -18,7 +18,6 @@ const EXTENSION_TESTS = [
   ['https://whatwg.org/robots.txt', 'text/plain; charset=utf-8'],
   ['https://resources.whatwg.org/fonts/SourceSansPro-Regular.woff', 'application/font-woff'],
   ['https://resources.whatwg.org/fonts/SourceSansPro-Regular.woff2', 'font/woff2'],
-  ['https://whatwg.org/demos/repeat-02/results.xml', 'application/xml'],
 ];
 
 const WITHOUT_EXTENSION_TESTS = [
@@ -39,17 +38,6 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://whatwg.org/410', 'text/html; charset=utf-8'],
   ['https://whatwg.org/charter', 'text/html; charset=utf-8'],
   ['https://whatwg.org/code-of-conduct', 'text/html; charset=utf-8'],
-  ['https://whatwg.org/demos/2008-sept/video/README', 'text/plain; charset=utf-8'],
-  ['https://whatwg.org/demos/date-01/test', 'text/html; charset=utf-8'],
-  ['https://whatwg.org/demos/date-01/test-source', 'text/plain; charset=utf-8'],
-  ['https://whatwg.org/demos/multiform-01/order', 'text/html; charset=utf-8'],
-  ['https://whatwg.org/demos/multiform-01/order-source', 'text/plain; charset=utf-8'],
-  ['https://whatwg.org/demos/multiform-01/postcode-lookup', 'application/xml'],
-  ['https://whatwg.org/demos/multiform-01/postcode-lookup-source', 'text/plain; charset=utf-8'],
-  ['https://whatwg.org/demos/multiform-01/product-lookup', 'application/xml'],
-  ['https://whatwg.org/demos/multiform-01/product-lookup-source', 'text/plain; charset=utf-8'],
-  ['https://whatwg.org/demos/repeat-01/test', 'text/html; charset=utf-8'],
-  ['https://whatwg.org/demos/repeat-01/test-source', 'text/plain; charset=utf-8'],
   ['https://whatwg.org/faq', 'text/html; charset=utf-8'],
   ['https://whatwg.org/mailing-list', 'text/html; charset=utf-8'],
   ['https://whatwg.org/news/future-of-html', 'text/html; charset=utf-8'],
