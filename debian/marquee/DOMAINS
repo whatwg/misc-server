@@ -3,6 +3,7 @@ compat.spec.whatwg.org
 console.spec.whatwg.org
 dom.spec.whatwg.org
 domparsing.spec.whatwg.org
+encoding.spec.whatwg.org
 fetch.spec.whatwg.org
 figures.idea.whatwg.org,figures.spec.whatwg.org
 fullscreen.spec.whatwg.org
