@@ -1,4 +1,3 @@
 #!/bin/bash -e
 
-# This needs https://github.com/tobiasschulz/fdupes for --linkhard support.
-fdupes --recurse --linkhard --noprompt /var/www/encoding.spec.whatwg.org
+su deploy -c "fdupes --recurse --linkhard --noprompt /var/www/encoding.spec.whatwg.org"
