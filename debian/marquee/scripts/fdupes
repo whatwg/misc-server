@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
-# This need https://github.com/tobiasschulz/fdupes for --linkhard support.
+# This needs https://github.com/tobiasschulz/fdupes for --linkhard support.
 fdupes --recurse --linkhard --noprompt /var/www/encoding.spec.whatwg.org
