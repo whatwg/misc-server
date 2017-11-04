@@ -3,9 +3,11 @@
 apt install nginx
 apt install libnginx-mod-http-fancyindex
 
+rm -f /etc/nginx/conf.d/*
 rm -f /etc/nginx/sites-enabled/*
 
 cp nginx/conf/http.conf /etc/nginx/conf.d/
+cp nginx/conf/cache.conf /etc/nginx/conf.d/
 cp nginx/conf/whatwg.conf /etc/nginx/
 cp nginx/conf/whatwg-headers.conf /etc/nginx/
 
