@@ -69,6 +69,7 @@ const HTTPS_TESTS = [
   ['https://html.spec.whatwg.org/complete', 301, 'https://html.spec.whatwg.org/', 'keep'],
   ['https://html.spec.whatwg.org/complete.html', 301, 'https://html.spec.whatwg.org/'],
   ['https://html.spec.whatwg.org/demos/offline/clock/clock.html', 301, 'https://html.spec.whatwg.org/demos/offline/clock/clock2.html'],
+  ['https://html.spec.whatwg.org/demos/workers/stocks/', 301, 'https://github.com/whatwg/html/tree/1332efd5e4c27ae859bf2316c6b477d77cf93716/demos/workers/stocks/', 'keep'],
   ['https://html.spec.whatwg.org/images/content-venn.png', 301, 'https://html.spec.whatwg.org/images/content-venn.svg'],
   ['https://html.spec.whatwg.org/images/contextmenu-collapsed.png', 410],
   ['https://html.spec.whatwg.org/images/contextmenu-expanded.png', 410],
