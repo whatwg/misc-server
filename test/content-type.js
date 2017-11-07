@@ -10,7 +10,7 @@ const EXTENSION_TESTS = [
   ['https://resources.whatwg.org/browser-logos/bb.jpg', 'image/jpeg'],
   ['https://resources.whatwg.org/dfn.js', 'text/javascript; charset=utf-8'],
   ['https://resources.whatwg.org/biblio.json', 'application/json'],
-  ['https://streams.spec.whatwg.org/demos/resources/web-animations.min.js.map', 'application/javascript'],
+  ['https://streams.spec.whatwg.org/demos/resources/web-animations.min.js.map', 'text/javascript'], // TODO: charset=utf-8
   ['https://resources.whatwg.org/README.md', 'text/plain; charset=utf-8'],
   ['https://resources.whatwg.org/logo.png', 'image/png'],
   ['https://resources.whatwg.org/build/deploy.sh', 'text/plain; charset=utf-8'],
