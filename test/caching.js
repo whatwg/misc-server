@@ -36,12 +36,7 @@ function test(url, expected) {
 describe('caching', function() {
   describe('URLs with cache-control header', function() {
     for (const url of CACHE_TESTS) {
-      let expected = 'max-age=604800'; // 7 days
-      // TODO: remove this hack when HTML has new hosting
-      if (url.startsWith('https://html.spec.whatwg.org/')) {
-        expected = 'public';
-      }
-      test(url, expected);
+      test(url, 'max-age=604800'); // 7 days
     }
   });
   describe('URLs without cache-control', function() {
