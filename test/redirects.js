@@ -28,7 +28,7 @@ const HTTP_TESTS = [
   ['http://fullscreen.spec.whatwg.org/', 301, 'https://fullscreen.spec.whatwg.org/', 'keep'],
   ['http://help.whatwg.org/', 301, 'https://help.whatwg.org/', 'keep'],
   ['http://html-differences.whatwg.org/', 301, 'https://html-differences.whatwg.org/', 'keep'],
-  ['http://html.spec.whatwg.org/foo', 404], // TODO
+  ['http://html.spec.whatwg.org/', 301, 'https://html.spec.whatwg.org/', 'keep'],
   ['http://idea.whatwg.org/', 301, 'https://idea.whatwg.org/', 'keep'],
   ['http://images.whatwg.org/', 301, 'https://images.whatwg.org/', 'keep'],
   ['http://infra.spec.whatwg.org/', 301, 'https://infra.spec.whatwg.org/', 'keep'],
