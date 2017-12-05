@@ -49,6 +49,7 @@ const HTTP_TESTS = [
   ['http://validator.whatwg.org/', 301, 'https://validator.whatwg.org/', 'keep'],
   ['http://webvtt.spec.whatwg.org/', 301, 'https://webvtt.spec.whatwg.org/', 'keep'],
   ['http://whatwg.org/', 301, 'https://whatwg.org/', 'keep'],
+  ['http://whatwg.org/c', 301, 'https://whatwg.org/c', 'keep'],
   ['http://wiki.whatwg.org/', 302, 'https://wiki.whatwg.org/', 'keep'],
   ['http://www.whatwg.org/', 301, 'https://www.whatwg.org/', 'keep'],
   ['http://xhr.spec.whatwg.org/', 301, 'https://xhr.spec.whatwg.org/', 'keep'],
@@ -177,15 +178,7 @@ function test(url, status, location) {
   specify(url, async function() {
     const response = await fetch(url, { redirect: 'manual' });
     assert.strictEqual(response.status, status);
-
-    let actual_location = response.headers.get('location');
-    // TODO: remove this workaround when html.spec.whatwg.org is no longer
-    // served by Apache. (The redirect directive can add an extra slash.)
-    if (url.startsWith('https://html.spec.whatwg.org/') &&
-        actual_location && actual_location.endsWith('//foo')) {
-      actual_location = actual_location.replace(/\/\/foo$/, '/foo');
-    }
-    assert.strictEqual(actual_location, location);
+    assert.strictEqual(response.headers.get('location'), location);
   });
 }
 
