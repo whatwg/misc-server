@@ -50,7 +50,7 @@ const HTTP_TESTS = [
   ['http://webvtt.spec.whatwg.org/', 301, 'https://webvtt.spec.whatwg.org/', 'keep'],
   ['http://whatwg.org/', 301, 'https://whatwg.org/', 'keep'],
   ['http://whatwg.org/c', 301, 'https://whatwg.org/c', 'keep'],
-  ['http://wiki.whatwg.org/', 302, 'https://wiki.whatwg.org/', 'keep'],
+  ['http://wiki.whatwg.org/', 301, 'https://wiki.whatwg.org/', 'keep'],
   ['http://www.whatwg.org/', 301, 'https://www.whatwg.org/', 'keep'],
   ['http://xhr.spec.whatwg.org/', 301, 'https://xhr.spec.whatwg.org/', 'keep'],
   ['http://xn--7ca.whatwg.org/', 301, 'https://xn--7ca.whatwg.org/', 'keep'],
