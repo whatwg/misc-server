@@ -142,7 +142,6 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/notifications', 301, 'https://notifications.spec.whatwg.org/'],
   ['https://whatwg.org/pdf', 301, 'https://html.spec.whatwg.org/print.pdf'],
   ['https://whatwg.org/position-paper', 301, 'https://www.w3.org/2004/04/webapps-cdf-ws/papers/opera.html'],
-  ['https://whatwg.org/principles', 302, 'https://whatwg.org/position-paper'],
   ['https://whatwg.org/q', 301, 'https://quirks.spec.whatwg.org/'],
   ['https://whatwg.org/quirks', 301, 'https://quirks.spec.whatwg.org/'],
   ['https://whatwg.org/specs', 301, 'https://spec.whatwg.org/'],
