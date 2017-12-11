@@ -151,6 +151,7 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/specs/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/specs/url/current-work', 301, 'https://url.spec.whatwg.org/', 'keep'],
   ['https://whatwg.org/specs/vocabs', 301, 'https://html.spec.whatwg.org/multipage/microdata.html', 'drop'],
+  ['https://whatwg.org/specs/web-apps/2007-10-26/multipage/images/', 301, 'https://whatwg.org/specs/web-apps/2007-10-26/images/', 'keep'],
   ['https://whatwg.org/specs/web-apps/current-work/', 301, 'https://html.spec.whatwg.org/', 'drop'],
   ['https://whatwg.org/specs/web-apps/current-work/complete.html', 301, 'https://html.spec.whatwg.org/'],
   ['https://whatwg.org/specs/web-apps/current-work/complete/', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
