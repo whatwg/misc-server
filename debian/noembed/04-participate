@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+PARTICIPATE_DIR=/home/noderunner/participate.whatwg.org
+
+git clone https://github.com/whatwg/participate.whatwg.org.git "$PARTICIPATE_DIR"
+chown -R noderunner:noderunner "$PARTICIPATE_DIR"
+
+cd "$PARTICIPATE_DIR"
+sudo -u noderunner npm install
+
+read -p "Copy private-config.sample.json to private-config.json and fill in all the values appropriately. Then press enter to continue"
+
+echo "@reboot cd $PARTICIPATE_DIR && pm2 start -i 4 --name=participate npm -- start" | sudo -u noderunner crontab -
