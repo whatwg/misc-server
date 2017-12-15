@@ -38,6 +38,7 @@ const HTTP_TESTS = [
   ['http://mimesniff.spec.whatwg.org/', 301, 'https://mimesniff.spec.whatwg.org/', 'keep'],
   ['http://n.whatwg.org/', 301, 'https://n.whatwg.org/', 'keep'],
   ['http://notifications.spec.whatwg.org/', 301, 'https://notifications.spec.whatwg.org/', 'keep'],
+  ['http://participate.whatwg.org/', 301, 'https://participate.whatwg.org/', 'keep'],
   ['http://quirks.spec.whatwg.org/', 301, 'https://quirks.spec.whatwg.org/', 'keep'],
   ['http://resources.whatwg.org/', 301, 'https://resources.whatwg.org/', 'keep'],
   ['http://spec.whatwg.org/', 301, 'https://spec.whatwg.org/', 'keep'],

@@ -37,6 +37,7 @@ const DOMAINS = [
   'n.whatwg.org',
   'notifications.spec.whatwg.org',
   'quirks.spec.whatwg.org',
+  'participate.whatwg.org',
   'resources.whatwg.org',
   'spec.whatwg.org',
   'specs.whatwg.org',
