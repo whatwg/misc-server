@@ -2,6 +2,6 @@
 
 apt install certbot
 
-for domains in `cat DOMAINS`; do
-    certbot certonly -n --agree-tos --webroot -m admin@whatwg.org -d $domains -w /var/www/http
-done
+# https://stackoverflow.com/a/8714446
+DOMAIN_ARG="$(cat DOMAINS | awk -vORS=, '{ print }' | sed 's/,$//')"
+certbot certonly --agree-tos --webroot -m admin@whatwg.org -d "$DOMAIN_ARG" -w /var/www/http
