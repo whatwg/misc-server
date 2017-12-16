@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+apt-get install nginx
+rm -f /etc/nginx/sites-enabled/*
+cp nginx/conf/* /etc/nginx/conf.d/
+
+mkdir -p /var/www/http/.well-known/acme-challenge/
+chown -R deploy:deploy /var/www
+rm -rf /var/www/html
+
+nginx -t
+nginx -s reload

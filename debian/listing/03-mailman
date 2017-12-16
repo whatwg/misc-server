@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+# http://docs.mailman3.org/en/latest/prodsetup.html
+
+apt-get install python-pip python3-pip
+apt-get install ruby-sass
+pip2 install whoosh # Django's settings.py changes not needed
+pip3 install mailman
+pip2 install postorius
+pip2 install hyperkitty
+pip2 install django
+
+#adduser --gecos "" --disabled-password mailmanuser
+#touch /etc/mailman.cfg
+#adduser --gecos "" --disabled-password djangouser
+cd /home/djangouser
+sudo -u djangouser git clone https://gitlab.com/mailman/mailman-suite.git
+cd mailman-suite/mailman-suite_project/
+sudo -u djangouser python2 manage.py migrate
+sudo -u djangouser python2 manage.py collectstatic
