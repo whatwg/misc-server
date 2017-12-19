@@ -21,7 +21,6 @@ const EXTENSION_TESTS = [
 ];
 
 const WITHOUT_EXTENSION_TESTS = [
-  ['https://html.spec.whatwg.org/commit-snapshots/123b42ece34482e8d21d7210eef6ce4709214207', 'text/html; charset=utf-8'],
   ['https://images.whatwg.org/CFC', 'image/png'],
   ['https://images.whatwg.org/CFI', 'image/png'],
   ['https://images.whatwg.org/REC', 'image/png'],
