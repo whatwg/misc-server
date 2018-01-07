@@ -33,6 +33,7 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://images.whatwg.org/tabs-left', 'image/png'],
   ['https://images.whatwg.org/tabs-right', 'image/png'],
   ['https://n.whatwg.org/formdata', 'text/plain; charset=utf-8'],
+  ['https://n.whatwg.org/work', 'text/plain; charset=utf-8'],
   ['https://whatwg.org/404', 'text/html; charset=utf-8'],
   ['https://whatwg.org/410', 'text/html; charset=utf-8'],
   ['https://whatwg.org/charter', 'text/html; charset=utf-8'],
