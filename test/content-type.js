@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 
 const EXTENSION_TESTS = [
   ['https://resources.whatwg.org/standard.css', 'text/css'],
+  ['https://whatwg.org/style/shared.css', 'text/css'],
   ['https://whatwg.org/specs/web-workers/current-work/rationale.html', 'text/html; charset=utf-8'],
   ['https://html.spec.whatwg.org/images/abstract.jpeg', 'image/jpeg'],
   ['https://resources.whatwg.org/browser-logos/bb.jpg', 'image/jpeg'],
@@ -121,7 +122,6 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://whatwg.org/specs/web-forms/current-work/xforms-implementation-diagram', 'image/png'],
   ['https://whatwg.org/status-2008-12', 'text/plain; charset=utf-8'],
   ['https://whatwg.org/style/specification', 'text/css'],
-  ['https://whatwg.org/style/tabbed-pages', 'text/css'],
   ['https://whatwg.org/working-mode', 'text/html; charset=utf-8'],
 ];
 
