@@ -90,6 +90,8 @@ const HTTPS_TESTS = [
   ['https://html.spec.whatwg.org/multipage/tabular-data.html', 301, 'https://html.spec.whatwg.org/multipage/tables.html'],
   ['https://javascript.spec.whatwg.org/', 302, 'https://github.com/tc39/ecma262/labels/web%20reality', 'drop'],
   ['https://mediasession.spec.whatwg.org/', 302, 'https://wicg.github.io/mediasession/', 'drop'],
+  ['https://resources.whatwg.org/logo-mime.png', 301, 'https://resources.whatwg.org/logo-mimesniff.png'],
+  ['https://resources.whatwg.org/logo-mime.svg', 301, 'https://resources.whatwg.org/logo-mimesniff.svg'],
   ['https://specs.whatwg.org/', 301, 'https://spec.whatwg.org/', 'drop'],
   ['https://svn.whatwg.org/', 301, 'https://github.com/whatwg', 'drop'],
   ['https://url.spec.whatwg.org/interop/', 410],
