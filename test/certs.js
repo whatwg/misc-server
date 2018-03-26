@@ -54,9 +54,15 @@ const DOMAINS = [
   'xn--7ca.whatwg.org',
 ];
 
-function getCertificate(domain) {
+function getCertificate(hostname) {
   return new Promise((resolve, reject) => {
-    const req = https.request(`https://${domain}`, res => {
+    const options = {
+      hostname: hostname,
+      // Use a new agent every time, as getPeerCertificate() can return an
+      // empty object if the connection is reused. (Maybe a bug, unclear.)
+      agent: new https.Agent,
+    };
+    const req = https.request(options, res => {
       resolve(res.connection.getPeerCertificate());
     });
     req.on('error', err => reject(err));
