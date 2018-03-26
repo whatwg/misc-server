@@ -71,6 +71,9 @@ describe('certificate expiry date', function() {
     specify(domain, async function() {
       const cert = await getCertificate(domain);
       const valid_to = Date.parse(cert.valid_to);
+      if (!isFinite(valid_to)) {
+        throw new Error(`invalid cert expiry date: ${cert.valid_to}`);
+      }
       const days_left = (valid_to - now) / (24 * 3600 * 1000);
       if (days_left < MIN_DAYS) {
         throw new Error(`cert expires in less than ${MIN_DAYS} days: ${cert.valid_to}`);
