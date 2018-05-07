@@ -1,7 +1,3 @@
 #!/bin/bash -e
 
-apt install certbot
-
-# https://stackoverflow.com/a/8714446
-DOMAIN_ARG="$(cat DOMAINS | awk -vORS=, '{ print }' | sed 's/,$//')"
-certbot certonly --agree-tos --webroot -m admin@whatwg.org -d "$DOMAIN_ARG" -w /var/www/http
+../common/scripts/certbot DOMAINS
