@@ -9,4 +9,4 @@ chown -R deploy:deploy /var/www
 rm -rf /var/www/html
 
 nginx -t
-nginx -s reload
+systemctl reload-or-restart nginx.service

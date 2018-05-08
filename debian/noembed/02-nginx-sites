@@ -4,4 +4,4 @@ rm -f /etc/nginx/sites-enabled/*
 cp nginx/sites/* /etc/nginx/sites-enabled/
 
 nginx -t
-nginx -s reload
+systemctl reload-or-restart nginx.service

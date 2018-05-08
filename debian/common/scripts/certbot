@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# enable backports to get a newer certbot
+sed -i 's/# \(deb.*stretch-backports.*\)/\1/' /etc/apt/sources.list
+apt update
+
+apt -t stretch-backports install certbot
+
+DOMAINS_FILE="$1"
+
+# https://stackoverflow.com/a/8714446
+DOMAIN_ARG="$(cat "$DOMAINS_FILE" | awk -vORS=, '{ print }' | sed 's/,$//')"
+certbot certonly --agree-tos --webroot -m admin@whatwg.org -d "$DOMAIN_ARG" -w /var/www/http
+
+# https://www.dzombak.com/blog/2018/01/Deploying-Let-s-Encrypt-with-Nginx-on-Ubuntu-16-04.html
+mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+cp "$(dirname "$0")/certbot-renewal-hooks-deploy-nginx" /etc/letsencrypt/renewal-hooks/deploy/nginx

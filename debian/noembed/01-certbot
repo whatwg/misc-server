@@ -1,9 +1,3 @@
 #!/bin/bash -e
 
-apt-get install certbot
-
-for domain in `cat DOMAINS`; do
-    certbot certonly -n --agree-tos --webroot -m admin@whatwg.org -d $domain -w /var/www/http
-done
-
-# TODO: reload nginx when certs are updated
+../common/scripts/certbot DOMAINS
