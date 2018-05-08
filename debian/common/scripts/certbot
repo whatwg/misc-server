@@ -1,6 +1,10 @@
 #!/bin/bash -e
 
-apt install certbot
+# enable backports to get a newer certbot
+sed -i 's/# \(deb.*stretch-backports.*\)/\1/' /etc/apt/sources.list
+apt update
+
+apt -t stretch-backports install certbot
 
 DOMAINS_FILE="$1"
 
