@@ -9,7 +9,7 @@ const EXTENSION_TESTS = [
   ['https://whatwg.org/specs/web-workers/current-work/rationale.html', 'text/html; charset=utf-8'],
   ['https://html.spec.whatwg.org/images/abstract.jpeg', 'image/jpeg'],
   ['https://resources.whatwg.org/browser-logos/bb.jpg', 'image/jpeg'],
-  ['https://resources.whatwg.org/dfn.js', 'text/javascript; charset=utf-8'],
+  ['https://resources.whatwg.org/file-bug.js', 'text/javascript; charset=utf-8'],
   ['https://resources.whatwg.org/biblio.json', 'application/json'],
   ['https://streams.spec.whatwg.org/demos/resources/web-animations.min.js.map', 'text/javascript'], // TODO: charset=utf-8
   ['https://resources.whatwg.org/README.md', 'text/plain; charset=utf-8'],
