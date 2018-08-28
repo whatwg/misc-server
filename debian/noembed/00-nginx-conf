@@ -2,7 +2,8 @@
 
 apt-get install nginx
 rm -f /etc/nginx/sites-enabled/*
-cp nginx/conf/* /etc/nginx/conf.d/
+cp nginx/conf/http.conf /etc/nginx/conf.d/
+cp nginx/conf/whatwg.conf /etc/nginx/
 
 mkdir -p /var/www/http/.well-known/acme-challenge/
 chown -R deploy:deploy /var/www
