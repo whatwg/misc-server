@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+../common/scripts/certbot DOMAINS
