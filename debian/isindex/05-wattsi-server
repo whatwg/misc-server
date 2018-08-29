@@ -8,11 +8,12 @@ git clone https://github.com/domenic/wattsi-server.git "$WATTSI_SERVER_DIR"
 chown -R noderunner:noderunner "$WATTSI_SERVER_DIR"
 
 cd "$WATTSI_SERVER_DIR"
-sudo -u noderunner npm install
+sudo --user noderunner npm install
 
 echo '{
   "wattsiPath": "/home/noderunner/wattsi",
   "port": 4000
 }' > "$WATTSI_SERVER_DIR/config.json"
 
-echo "@reboot cd $WATTSI_SERVER_DIR && pm2 start -i 4 --name=wattsi-server lib/app.js" | sudo -u noderunner crontab -
+echo "@reboot cd $WATTSI_SERVER_DIR && pm2 start -i 4 --name=wattsi-server lib/app.js" | sudo --user noderunner crontab -
+sudo --user noderunner pm2 start -i 4 --name=wattsi-server lib/app.js

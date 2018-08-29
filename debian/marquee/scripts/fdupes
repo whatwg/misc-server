@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-sudo -u deploy fdupes --recurse --linkhard --noprompt /var/www/
+sudo --user deploy fdupes --recurse --linkhard --noprompt /var/www/
