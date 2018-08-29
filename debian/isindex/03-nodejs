@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+apt-get install -y curl
+
+# https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+curl -sL https://deb.nodesource.com/setup_8.x | bash -
+apt-get install -y nodejs
+
+npm install -g pm2
+
+adduser --gecos "" --disabled-password noderunner

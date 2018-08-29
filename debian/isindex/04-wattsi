@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+apt-get install -y fp-compiler fp-units-fcl fp-units-net libc6-dev
+
+WATTSI_DIR=/home/noderunner/wattsi
+
+git clone https://github.com/whatwg/wattsi.git "$WATTSI_DIR"
+chown -R noderunner:noderunner "$WATTSI_DIR"
+
+cd "$WATTSI_DIR"
+sudo -u noderunner ./build.sh
