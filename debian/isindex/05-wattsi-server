@@ -11,9 +11,10 @@ cd "$WATTSI_SERVER_DIR"
 sudo --user noderunner npm install
 
 echo '{
-  "wattsiPath": "/home/noderunner/wattsi",
+  "wattsiPath": "/home/noderunner/wattsi/bin/wattsi",
   "port": 4000
 }' > "$WATTSI_SERVER_DIR/config.json"
+chown noderunner:noderunner "$WATTSI_SERVER_DIR/config.json"
 
 echo "@reboot cd $WATTSI_SERVER_DIR && pm2 start -i 4 --name=wattsi-server lib/app.js" | sudo --user noderunner crontab -
 sudo --user noderunner pm2 start -i 4 --name=wattsi-server lib/app.js
