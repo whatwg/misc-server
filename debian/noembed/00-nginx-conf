@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-apt-get install nginx
+apt install -y nginx
 rm -f /etc/nginx/sites-enabled/*
 cp nginx/conf/http.conf /etc/nginx/conf.d/
 cp nginx/conf/whatwg.conf /etc/nginx/

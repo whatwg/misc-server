@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-apt-get install -y fp-compiler fp-units-fcl fp-units-net libc6-dev
+apt install -y fp-compiler fp-units-fcl fp-units-net libc6-dev
 
 WATTSI_DIR=/home/noderunner/wattsi
 

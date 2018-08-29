@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-apt-get install -y p7zip-full
+apt install -y p7zip-full
 
 WATTSI_SERVER_DIR=/home/noderunner/wattsi-server
 
