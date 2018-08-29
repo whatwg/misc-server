@@ -1,11 +1,11 @@
 #!/bin/bash -e
 
 # build and install fdupes with --linkhard support (not in debian package)
-apt install make gcc
+apt install -y make gcc
 git clone https://github.com/tobiasschulz/fdupes tmp
 cd tmp
 make install
 cd ..
 rm -rf tmp
-apt remove make gcc
-apt autoremove
+apt remove -y make gcc
+apt autoremove -y

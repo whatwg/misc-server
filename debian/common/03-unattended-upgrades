@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-apt install unattended-upgrades
+apt install -y unattended-upgrades
 dpkg-reconfigure unattended-upgrades
 cat >> /etc/apt/apt.conf.d/50unattended-upgrades <<EOF
 
