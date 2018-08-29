@@ -8,4 +8,4 @@ git clone https://github.com/whatwg/wattsi.git "$WATTSI_DIR"
 chown -R noderunner:noderunner "$WATTSI_DIR"
 
 cd "$WATTSI_DIR"
-sudo -u noderunner ./build.sh
+sudo --user noderunner ./build.sh
