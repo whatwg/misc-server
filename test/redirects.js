@@ -68,6 +68,7 @@ const HTTPS_TESTS = [
   ['https://forums.whatwg.org/', 301, 'https://forums.whatwg.org/bb3/'],
   ['https://forums.whatwg.org/bb3/viewtopic.php?f=3&p=8538&sid=1cb9e434c59258d940d476648b0301df', 301, 'https://forums.whatwg.org/bb3/viewtopic.php?f=3&p=8538'],
   ['https://help.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'drop'],
+  ['https://html-differences.whatwg.org/', 301, 'https://html.spec.whatwg.org/dev/', 'drop'],
   ['https://html.spec.whatwg.org/C', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://html.spec.whatwg.org/complete', 301, 'https://html.spec.whatwg.org/', 'keep'],
   ['https://html.spec.whatwg.org/complete.html', 301, 'https://html.spec.whatwg.org/'],
