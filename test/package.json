@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "mocha": "^6.2.2",
-    "node-fetch": "^1.7.3"
+    "node-fetch": "^2.6.0"
   },
   "scripts": {
     "test": "mocha --timeout=10000 --retries=3 *.js"
