@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "mocha": "^4.0.1",
+    "mocha": "^6.2.2",
     "node-fetch": "^1.7.3"
   },
   "scripts": {
