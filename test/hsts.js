@@ -22,6 +22,7 @@ describe('strict-transport-security header', function() {
       assert.strictEqual(response.status, 200);
       let value = response.headers.get('strict-transport-security');
       // Trim any trailing semicolon.
+      // FIXME: https://github.com/whatwg/misc-server/issues/109
       if (value.endsWith(';')) {
         value = value.substr(0, value.length - 1);
       }
