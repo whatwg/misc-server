@@ -12,6 +12,7 @@ const TEST_DATA = [
   ['resources.whatwg.org', 'nosniff', null, '1; mode=block'],
   ['spec.whatwg.org', 'nosniff', null, '1; mode=block'],
   // FIXME: don't send double x-content-type-options headers
+  // https://github.com/whatwg/misc-server/issues/115
   ['wiki.whatwg.org', 'nosniff, nosniff', 'sameorigin', '1; mode=block'],
 ];
 
