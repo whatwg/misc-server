@@ -33,7 +33,7 @@ const HTTP_TESTS = [
   ['http://images.whatwg.org/', 301, 'https://images.whatwg.org/', 'keep'],
   ['http://infra.spec.whatwg.org/', 301, 'https://infra.spec.whatwg.org/', 'keep'],
   ['http://javascript.spec.whatwg.org/', 301, 'https://javascript.spec.whatwg.org/', 'keep'],
-  ['http://lists.whatwg.org/', 302, 'http://lists.whatwg.org/listinfo.cgi'], // TODO
+  // ['http://lists.whatwg.org/', 302, 'http://lists.whatwg.org/listinfo.cgi'], // https://github.com/whatwg/misc-server/issues/75
   ['http://mediasession.spec.whatwg.org/', 301, 'https://mediasession.spec.whatwg.org/', 'keep'],
   ['http://mimesniff.spec.whatwg.org/', 301, 'https://mimesniff.spec.whatwg.org/', 'keep'],
   ['http://n.whatwg.org/', 301, 'https://n.whatwg.org/', 'keep'],
