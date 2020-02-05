@@ -14,7 +14,7 @@ const CORS_TESTS = [
 const NO_CORS_TESTS = [
   // domains for which it's probably a mistake to have CORS headers
   'https://blog.whatwg.org/',
-  //'https://lists.whatwg.org/',
+  //'https://lists.whatwg.org/', // https://github.com/whatwg/misc-server/issues/75
   'https://participate.whatwg.org/',
   'https://wiki.whatwg.org/',
 ];
