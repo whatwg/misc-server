@@ -33,7 +33,7 @@ const HTTP_TESTS = [
   ['http://images.whatwg.org/', 301, 'https://images.whatwg.org/', 'keep'],
   ['http://infra.spec.whatwg.org/', 301, 'https://infra.spec.whatwg.org/', 'keep'],
   ['http://javascript.spec.whatwg.org/', 301, 'https://javascript.spec.whatwg.org/', 'keep'],
-  // ['http://lists.whatwg.org/', 302, 'http://lists.whatwg.org/listinfo.cgi'], // https://github.com/whatwg/misc-server/issues/75
+  ['http://lists.whatwg.org/', 301, 'https://lists.whatwg.org/', 'keep'],
   ['http://mediasession.spec.whatwg.org/', 301, 'https://mediasession.spec.whatwg.org/', 'keep'],
   ['http://mimesniff.spec.whatwg.org/', 301, 'https://mimesniff.spec.whatwg.org/', 'keep'],
   ['http://n.whatwg.org/', 301, 'https://n.whatwg.org/', 'keep'],
@@ -90,6 +90,8 @@ const HTTPS_TESTS = [
   ['https://html.spec.whatwg.org/multipage/section-sql.html', 410],
   ['https://html.spec.whatwg.org/multipage/tabular-data.html', 301, 'https://html.spec.whatwg.org/multipage/tables.html'],
   ['https://javascript.spec.whatwg.org/', 302, 'https://github.com/tc39/ecma262/labels/web%20reality', 'drop'],
+  ['https://lists.whatwg.org/', 302, 'https://lists.whatwg.org/listinfo.cgi'],
+  ['https://lists.whatwg.org/htdig.cgi', 301, 'https://lists.whatwg.org/pipermail/', 'keep'],
   ['https://mediasession.spec.whatwg.org/', 302, 'https://wicg.github.io/mediasession/', 'drop'],
   ['https://resources.whatwg.org/logo-mime.png', 301, 'https://resources.whatwg.org/logo-mimesniff.png'],
   ['https://resources.whatwg.org/logo-mime.svg', 301, 'https://resources.whatwg.org/logo-mimesniff.svg'],

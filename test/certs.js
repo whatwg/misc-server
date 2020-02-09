@@ -27,7 +27,7 @@ const DOMAINS = [
   'help.whatwg.org',
   'html-differences.whatwg.org',
   'html.spec.whatwg.org',
-  // 'lists.whatwg.org', // https://github.com/whatwg/misc-server/issues/75
+  'lists.whatwg.org',
   'idea.whatwg.org',
   'images.whatwg.org',
   'infra.spec.whatwg.org',
