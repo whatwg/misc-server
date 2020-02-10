@@ -129,7 +129,6 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/fetch', 301, 'https://fetch.spec.whatwg.org/'],
   ['https://whatwg.org/fs', 301, 'https://fullscreen.spec.whatwg.org/'],
   ['https://whatwg.org/fullscreen', 301, 'https://fullscreen.spec.whatwg.org/'],
-  ['https://whatwg.org/google2569a0eb653e4cf1.html', 301, 'https://whatwg.org/'],
   ['https://whatwg.org/html', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/html5', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/images', 302, 'https://images.whatwg.org/'],
