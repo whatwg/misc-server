@@ -140,6 +140,7 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/link-fixup.js', 301, 'https://html.spec.whatwg.org/multipage/link-fixup.js'],
   ['https://whatwg.org/m', 301, 'https://mimesniff.spec.whatwg.org/'],
   ['https://whatwg.org/mailing-list)', 301, 'https://whatwg.org/mailing-list'],
+  ['https://whatwg.org/mailing-list', 301, 'https://lists.whatwg.whatwg.org/'],
   ['https://whatwg.org/mailing-list.pl', 410],
   ['https://whatwg.org/mimesniff', 301, 'https://mimesniff.spec.whatwg.org/'],
   ['https://whatwg.org/n', 301, 'https://notifications.spec.whatwg.org/'],
