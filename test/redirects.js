@@ -92,6 +92,7 @@ const HTTPS_TESTS = [
   ['https://javascript.spec.whatwg.org/', 302, 'https://github.com/tc39/ecma262/labels/web%20reality', 'drop'],
   ['https://lists.whatwg.org/', 302, 'https://lists.whatwg.org/listinfo.cgi'],
   ['https://lists.whatwg.org/htdig.cgi', 301, 'https://lists.whatwg.org/pipermail/', 'keep'],
+  ['https://lists.whatwg.org/listinfo.cgi', 301, 'https://lists.whatwg.org/', 'drop'],
   ['https://mediasession.spec.whatwg.org/', 302, 'https://wicg.github.io/mediasession/', 'drop'],
   ['https://resources.whatwg.org/logo-mime.png', 301, 'https://resources.whatwg.org/logo-mimesniff.png'],
   ['https://resources.whatwg.org/logo-mime.svg', 301, 'https://resources.whatwg.org/logo-mimesniff.svg'],
