@@ -40,7 +40,6 @@ const WITHOUT_EXTENSION_TESTS = [
   ['https://whatwg.org/charter', 'text/html; charset=utf-8'],
   ['https://whatwg.org/code-of-conduct', 'text/html; charset=utf-8'],
   ['https://whatwg.org/faq', 'text/html; charset=utf-8'],
-  ['https://whatwg.org/mailing-list', 'text/html; charset=utf-8'],
   ['https://whatwg.org/news/future-of-html', 'text/html; charset=utf-8'],
   ['https://whatwg.org/news/start', 'text/html; charset=utf-8'],
   ['https://whatwg.org/news/web-forms-call-for-comments-1', 'text/html; charset=utf-8'],
