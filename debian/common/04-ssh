@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-apt install -y openssh-server
+apt install -y openssh-server rsync
 
 read -p "ssh password login will be disabled, press enter to continue"
 

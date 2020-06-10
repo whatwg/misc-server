@@ -1,0 +1,25 @@
+#!/bin/bash -e
+
+# This setup is used on Debian 10
+
+DIGITALOCEAN_INI=/etc/letsencrypt/digitalocean.ini
+
+token=""
+while [ -z "$token" ]; do
+  read -p "DigitalOcean access token: " token
+done
+
+echo "dns_digitalocean_token = $token" > "$DIGITALOCEAN_INI"
+chmod 0600 "$DIGITALOCEAN_INI"
+
+apt install certbot python3-certbot-dns-digitalocean
+
+DOMAINS_FILE="$1"
+
+# https://stackoverflow.com/a/8714446
+DOMAIN_ARG="$(cat "$DOMAINS_FILE" | awk -vORS=, '{ print }' | sed 's/,$//')"
+certbot certonly --agree-tos --dns-digitalocean --dns-digitalocean-credentials "$DIGITALOCEAN_INI" -m admin@whatwg.org -d "$DOMAIN_ARG"
+
+# https://www.dzombak.com/blog/2018/01/Deploying-Let-s-Encrypt-with-Nginx-on-Ubuntu-16-04.html
+mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+cp "$(dirname "$0")/certbot-renewal-hooks-deploy-nginx" /etc/letsencrypt/renewal-hooks/deploy/nginx
