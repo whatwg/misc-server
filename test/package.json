@@ -5,6 +5,6 @@
     "node-fetch": "^2.6.0"
   },
   "scripts": {
-    "test": "mocha --color --timeout=10000 --retries=3 *.js"
+    "test": "mocha --timeout=10000 --retries=3 *.js"
   }
 }
