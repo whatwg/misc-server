@@ -2,10 +2,10 @@ name: Test
 on:
   pull_request:
     branches:
-    - master
+    - main
   push:
     branches:
-    - master
+    - main
   schedule:
   # 13:44 is an arbitrarily chosen daily time.
   - cron: '44 13 * * *'
