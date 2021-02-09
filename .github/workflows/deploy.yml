@@ -1,0 +1,14 @@
+name: Deploy
+on:
+  push:
+    branches:
+    - digitalocean-apps
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - run: doctl apps list
