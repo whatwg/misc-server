@@ -8,6 +8,9 @@ region: nyc
 services:
 - dockerfile_path: Dockerfile
   envs:
+  - key: PORT
+    scope: RUN_TIME
+    value: 8080
   - key: PRIVATE_CONFIG_JSON
     scope: RUN_TIME
     type: SECRET
@@ -18,7 +21,7 @@ services:
     repo: foolip/participate.whatwg.org
   health_check:
     http_path: /
-  http_port: 3000
+  http_port: 8080
   instance_count: 1
   instance_size_slug: basic-xxs
   name: participate
