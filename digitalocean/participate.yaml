@@ -8,9 +8,6 @@ region: nyc
 services:
 - dockerfile_path: Dockerfile
   envs:
-  - key: PORT
-    scope: RUN_TIME
-    value: '8080'
   - key: PRIVATE_CONFIG_JSON
     scope: RUN_TIME
     type: SECRET
@@ -24,7 +21,7 @@ services:
     repo: whatwg/participate.whatwg.org
   health_check:
     http_path: /
-  http_port: 8080
+  http_port: 3000
   instance_count: 1
   instance_size_slug: basic-xxs
   name: participate
