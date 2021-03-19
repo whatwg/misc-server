@@ -1,7 +1,0 @@
-#!/bin/bash -e
-
-rm -f /etc/nginx/sites-enabled/*
-cp nginx/sites/* /etc/nginx/sites-enabled/
-
-nginx -t
-systemctl reload-or-restart nginx.service
