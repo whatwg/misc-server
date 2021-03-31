@@ -19,7 +19,7 @@ services:
     http_path: /version
   http_port: 3000
   instance_count: 1
-  instance_size_slug: basic-xxs
+  instance_size_slug: basic-xs # basic-xss will not work; Wattsi requires more RAM
   name: build
   routes:
   - path: /
