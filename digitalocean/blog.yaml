@@ -10,26 +10,26 @@ services:
   envs:
   - key: WORDPRESS_DB_HOST
     scope: RUN_TIME
-    value: ${db-mysql-nyc3-38716.HOSTNAME}:${db-mysql-nyc3-38716.PORT}
+    value: ${whatwg-db.HOSTNAME}:${whatwg-db.PORT}
   - key: WORDPRESS_DB_NAME
     scope: RUN_TIME
-    value: ${db-mysql-nyc3-38716.DATABASE}
+    value: ${whatwg-db.DATABASE}
   - key: WORDPRESS_DB_USER
     scope: RUN_TIME
-    value: ${db-mysql-nyc3-38716.USERNAME}
+    value: ${whatwg-db.USERNAME}
   - key: WORDPRESS_DB_PASSWORD
     scope: RUN_TIME
-    value: ${db-mysql-nyc3-38716.PASSWORD}
+    value: ${whatwg-db.PASSWORD}
   - key: WORDPRESS_EXTRA_CONFIG
     scope: RUN_TIME
     value: |
       define('DB_CHARSET', 'utf8mb4');
   github:
-    branch: do-apps # TODO update
+    branch: main
     deploy_on_push: true
     repo: whatwg/blog.whatwg.org
   health_check:
-    http_path: /
+    http_path: /feed-autodiscovery
   http_port: 80
   instance_count: 1
   instance_size_slug: basic-xxs
@@ -37,10 +37,10 @@ services:
   routes:
   - path: /
 databases:
-- cluster_name: db-mysql-nyc3-38716
+- cluster_name: whatwg-db
   db_name: whatblogdb
   db_user: whatbloguser
   engine: MYSQL
-  name: db-mysql-nyc3-38716
+  name: whatwg-db
   production: true
   version: "8"
