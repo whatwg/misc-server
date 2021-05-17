@@ -32,7 +32,7 @@ services:
     http_path: /feed-autodiscovery
   http_port: 80
   instance_count: 1
-  instance_size_slug: basic-xxs
+  instance_size_slug: basic-xs
   name: blog
   routes:
   - path: /
