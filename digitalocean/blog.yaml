@@ -1,0 +1,46 @@
+# https://www.digitalocean.com/docs/app-platform/references/app-specification-reference/
+domains:
+- domain: blog.whatwg.org
+  type: PRIMARY
+  zone: whatwg.org
+name: blog
+region: nyc
+services:
+- dockerfile_path: Dockerfile
+  envs:
+  - key: WORDPRESS_DB_HOST
+    scope: RUN_TIME
+    value: ${whatwg-db.HOSTNAME}:${whatwg-db.PORT}
+  - key: WORDPRESS_DB_NAME
+    scope: RUN_TIME
+    value: ${whatwg-db.DATABASE}
+  - key: WORDPRESS_DB_USER
+    scope: RUN_TIME
+    value: ${whatwg-db.USERNAME}
+  - key: WORDPRESS_DB_PASSWORD
+    scope: RUN_TIME
+    value: ${whatwg-db.PASSWORD}
+  - key: WORDPRESS_EXTRA_CONFIG
+    scope: RUN_TIME
+    value: |
+      define('DB_CHARSET', 'utf8mb4');
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: whatwg/blog.whatwg.org
+  health_check:
+    http_path: /feed-autodiscovery
+  http_port: 80
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: blog
+  routes:
+  - path: /
+databases:
+- cluster_name: whatwg-db
+  db_name: whatblogdb
+  db_user: whatbloguser
+  engine: MYSQL
+  name: whatwg-db
+  production: true
+  version: "8"
