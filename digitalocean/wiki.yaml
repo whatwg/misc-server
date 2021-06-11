@@ -1,0 +1,50 @@
+# https://www.digitalocean.com/docs/app-platform/references/app-specification-reference/
+domains:
+- domain: wiki.whatwg.org
+  type: PRIMARY
+  zone: whatwg.org
+name: wiki
+region: nyc
+services:
+- dockerfile_path: Dockerfile
+  envs:
+  - key: MEDIAWIKI_DB_SERVER
+    scope: RUN_TIME
+    value: ${whatwg-db.HOSTNAME}:${whatwg-db.PORT}
+  - key: MEDIAWIKI_DB_NAME
+    scope: RUN_TIME
+    value: ${whatwg-db.DATABASE}
+  - key: MEDIAWIKI_DB_USER
+    scope: RUN_TIME
+    value: ${whatwg-db.USERNAME}
+  - key: MEDIAWIKI_DB_PASSWORD
+    scope: RUN_TIME
+    value: ${whatwg-db.PASSWORD}
+  - key: MEDIAWIKI_SECRET_KEY
+    scope: RUN_TIME
+    type: SECRET
+    value: __MEDIAWIKI_SECRET_KEY__
+  - key: RECAPTCHA_SECRET_KEY
+    scope: RUN_TIME
+    type: SECRET
+    value: __RECAPTCHA_SECRET_KEY__
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: whatwg/wiki.whatwg.org
+  health_check:
+    http_path: /wiki/What_you_can_do
+  http_port: 80
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: wiki
+  routes:
+  - path: /
+databases:
+- cluster_name: whatwg-db
+  db_name: mediawiki
+  db_user: mediawiki
+  engine: MYSQL
+  name: whatwg-db
+  production: true
+  version: "8"
