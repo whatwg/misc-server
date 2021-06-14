@@ -11,9 +11,7 @@ const TEST_DATA = [
   ['participate.whatwg.org', 'nosniff', 'deny'],
   ['resources.whatwg.org', 'nosniff', null],
   ['spec.whatwg.org', 'nosniff', null],
-  // FIXME: don't send double x-content-type-options headers
-  // https://github.com/whatwg/misc-server/issues/115
-  ['wiki.whatwg.org', 'nosniff, nosniff', 'sameorigin'],
+  ['wiki.whatwg.org', 'nosniff', 'sameorigin'],
 ];
 
 describe('x-* headers', function() {
