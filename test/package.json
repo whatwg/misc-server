@@ -2,7 +2,7 @@
   "private": true,
   "dependencies": {
     "mocha": "^9.0.1",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^3.0.0"
   },
   "scripts": {
     "test": "mocha --timeout=10000 --retries=3 *.js"
