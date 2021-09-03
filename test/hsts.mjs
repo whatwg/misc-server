@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 const HOSTNAMES = [
   // not an exhaustive list, just enough to catch accidental removal

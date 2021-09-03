@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 describe('blog', function() {
   // regression test for https://github.com/whatwg/meta/issues/59

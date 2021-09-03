@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 describe('build', function() {
   specify('/version', async function() {
