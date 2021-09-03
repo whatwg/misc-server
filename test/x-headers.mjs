@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 const TEST_DATA = [
   // not an exhaustive list, just enough to catch accidental removal

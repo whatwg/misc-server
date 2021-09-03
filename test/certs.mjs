@@ -1,6 +1,4 @@
-'use strict';
-
-const https = require('https');
+import https from 'https';
 
 // Let's Encrypt should renew when 30 days remain, so if it's less than 25
 // something is wrong with certificate automation.

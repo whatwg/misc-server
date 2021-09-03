@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 const EXTENSION_TESTS = [
   ['https://resources.whatwg.org/standard.css', 'text/css'],

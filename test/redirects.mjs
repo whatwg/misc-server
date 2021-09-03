@@ -1,10 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const fetch = require('node-fetch');
-
-// The following TODOs should all be resolved by
-// https://github.com/whatwg/misc-server/issues/7.
+import assert from 'assert';
+import fetch from 'node-fetch';
 
 // arrays of [url to fetch, HTTP status, location header, keep /foo?]
 
