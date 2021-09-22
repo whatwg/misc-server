@@ -36,7 +36,7 @@ services:
     http_path: /wiki/What_you_can_do
   http_port: 80
   instance_count: 1
-  instance_size_slug: basic-xs
+  instance_size_slug: basic-s
   name: wiki
   routes:
   - path: /
