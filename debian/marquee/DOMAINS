@@ -33,8 +33,10 @@ specs.whatwg.org
 storage.spec.whatwg.org
 streams.spec.whatwg.org
 svn.whatwg.org
+testutils.spec.whatwg.org
 url.spec.whatwg.org
 validator.whatwg.org
+webidl.spec.whatwg.org
 webvtt.spec.whatwg.org
 www.whatwg.org
 xhr.spec.whatwg.org
