@@ -99,6 +99,7 @@ const HTTPS_TESTS = [
   ['https://url.spec.whatwg.org/reference-implementation/liveview3.html', 301, 'https://quuz.org/url/liveview3.html'],
   ['https://url.spec.whatwg.org/reference-implementation/uri-validate.html', 301, 'https://quuz.org/url/uri-validate.html'],
   ['https://validator.whatwg.org/', 301, 'https://whatwg.org/validator/', 'keep'],
+  ['https://websocket.spec.whatwg.org/', 301, 'https://websockets.spec.whatwg.org/', 'keep'],
   ['https://webvtt.spec.whatwg.org/', 302, 'https://w3c.github.io/webvtt/', 'keep'],
   ['https://whatwg.org/C', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],
   ['https://whatwg.org/HTML', 301, 'https://html.spec.whatwg.org/multipage/', 'keep'],

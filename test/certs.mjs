@@ -46,6 +46,8 @@ const DOMAINS = [
   'url.spec.whatwg.org',
   'validator.whatwg.org',
   'webidl.spec.whatwg.org',
+  'websocket.spec.whatwg.org',
+  'websockets.spec.whatwg.org',
   'webvtt.spec.whatwg.org',
   'whatwg.org',
   'wiki.whatwg.org',
