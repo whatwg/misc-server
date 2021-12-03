@@ -21,6 +21,7 @@ const DOMAINS = [
   'figures.idea.whatwg.org',
   'figures.spec.whatwg.org',
   'forums.whatwg.org',
+  'fs.spec.whatwg.org',
   'fullscreen.spec.whatwg.org',
   'help.whatwg.org',
   'html-differences.whatwg.org',
