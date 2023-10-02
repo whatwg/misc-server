@@ -140,7 +140,7 @@ const HTTPS_TESTS = [
   ['https://whatwg.org/mailing-list.pl', 410],
   ['https://whatwg.org/mimesniff', 301, 'https://mimesniff.spec.whatwg.org/'],
   ['https://whatwg.org/n', 301, 'https://notifications.spec.whatwg.org/'],
-  ['https://whatwg.org/newbug', 302, 'https://github.com/whatwg/html/issues/new'],
+  ['https://whatwg.org/newbug', 302, 'https://github.com/whatwg/html/issues/new/choose'],
   ['https://whatwg.org/notifications', 301, 'https://notifications.spec.whatwg.org/'],
   ['https://whatwg.org/pdf', 301, 'https://html.spec.whatwg.org/print.pdf'],
   ['https://whatwg.org/position-paper', 301, 'https://www.w3.org/2004/04/webapps-cdf-ws/papers/opera.html'],
