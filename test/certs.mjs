@@ -45,6 +45,7 @@ const DOMAINS = [
   'svn.whatwg.org',
   'testutils.spec.whatwg.org',
   'url.spec.whatwg.org',
+  'urlpattern.spec.whatwg.org',
   'validator.whatwg.org',
   'webidl.spec.whatwg.org',
   'websocket.spec.whatwg.org',
