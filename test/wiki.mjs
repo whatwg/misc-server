@@ -16,7 +16,7 @@ describe('wiki', function() {
     assert.strictEqual(response.status, 200);
     const text = await response.text();
     // history pages should have a certain title and buttons
-    assert(text.includes('Revision history of "IRC"'));
+    assert(text.includes('IRC: Revision history'));
     assert(text.includes('value="Compare selected revisions"'));
     assert(!text.includes('This site is experiencing technical difficulties'));
   });
