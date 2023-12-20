@@ -84,7 +84,7 @@ const HTTPS_TESTS = [
   ['https://html.spec.whatwg.org/multipage/scripting-1.html', 301, 'https://html.spec.whatwg.org/multipage/scripting.html'],
   ['https://html.spec.whatwg.org/multipage/section-sql.html', 410],
   ['https://html.spec.whatwg.org/multipage/tabular-data.html', 301, 'https://html.spec.whatwg.org/multipage/tables.html'],
-  ['https://html.spec.whatwg.org/multipage/websockets/', 301, 'https://websockets.spec.whatwg.org/'],
+  ['https://html.spec.whatwg.org/multipage/websockets', 301, 'https://websockets.spec.whatwg.org/', 'keep'],
   ['https://javascript.spec.whatwg.org/', 302, 'https://github.com/tc39/ecma262/labels/web%20reality', 'drop'],
   ['https://lists.whatwg.org/htdig.cgi', 301, 'https://lists.whatwg.org/pipermail/', 'keep'],
   ['https://lists.whatwg.org/listinfo.cgi', 301, 'https://lists.whatwg.org/'],
