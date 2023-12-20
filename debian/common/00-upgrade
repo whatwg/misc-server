@@ -4,5 +4,6 @@ apt update -y
 apt upgrade -y
 apt autoremove -y
 
+# TODO: this is redundant on Debian 10, remove when we have no Debian 9
 echo "Etc/UTC" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata

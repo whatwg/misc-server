@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# This setup is used on Debian 9
+# TODO: remove when we no longer have any Debian 9 VMs
+
 # enable backports to get a newer certbot
 sed -i 's/# \(deb.*stretch-backports.*\)/\1/' /etc/apt/sources.list
 apt update
