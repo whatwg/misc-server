@@ -11,6 +11,7 @@ const DOMAINS = [
   'build.whatwg.org',
   'c.whatwg.org',
   'compat.spec.whatwg.org',
+  'compression.spec.whatwg.org',
   'console.spec.whatwg.org',
   'developer.whatwg.org',
   'developers.whatwg.org',
