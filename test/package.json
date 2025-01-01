@@ -1,7 +1,7 @@
 {
   "private": true,
   "dependencies": {
-    "mocha": "^10.2.0",
+    "mocha": "^11.0.1",
     "node-fetch": "^3.3.2"
   },
   "scripts": {
