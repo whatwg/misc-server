@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 
 const HOSTNAMES = [
   // not an exhaustive list, just enough to catch accidental removal

@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 
 const CACHE_TESTS = [
   'https://html.spec.whatwg.org/fonts/Essays1743.ttf',

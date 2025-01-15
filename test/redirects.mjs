@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 
 // arrays of [url to fetch, HTTP status, location header, keep /foo?]
 
