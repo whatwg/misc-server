@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 
 describe('build', function() {
   specify('/version', async function() {

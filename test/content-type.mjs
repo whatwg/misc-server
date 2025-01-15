@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 
 const EXTENSION_TESTS = [
   ['https://resources.whatwg.org/standard.css', 'text/css'],
