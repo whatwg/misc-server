@@ -13,6 +13,7 @@ const DOMAINS = [
   'compat.spec.whatwg.org',
   'compression.spec.whatwg.org',
   'console.spec.whatwg.org',
+  'cookiestore.spec.whatwg.org',
   'developer.whatwg.org',
   'developers.whatwg.org',
   'dom.spec.whatwg.org',
