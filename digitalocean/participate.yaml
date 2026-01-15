@@ -27,3 +27,4 @@ services:
   name: participate
   routes:
   - path: /
+disable_email_obfuscation: true
