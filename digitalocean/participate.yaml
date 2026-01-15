@@ -1,4 +1,5 @@
 # https://www.digitalocean.com/docs/app-platform/references/app-specification-reference/
+disable_email_obfuscation: true
 domains:
 - domain: participate.whatwg.org
   type: PRIMARY
@@ -32,4 +33,3 @@ services:
   instance_count: 1
   instance_size_slug: basic-xxs
   name: participate
-disable_email_obfuscation: true
