@@ -1,8 +1,16 @@
 # https://www.digitalocean.com/docs/app-platform/references/app-specification-reference/
+disable_email_obfuscation: true
 domains:
 - domain: participate.whatwg.org
   type: PRIMARY
   zone: whatwg.org
+ingress:
+  rules:
+  - component:
+      name: participate
+    match:
+      path:
+        prefix: /
 name: participate
 region: nyc
 services:
@@ -25,5 +33,3 @@ services:
   instance_count: 1
   instance_size_slug: basic-xxs
   name: participate
-  routes:
-  - path: /
