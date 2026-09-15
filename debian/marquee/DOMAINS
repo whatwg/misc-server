@@ -1,4 +1,5 @@
 whatwg.org
+bluetooth.spec.whatwg.org
 books.idea.whatwg.org
 books.spec.whatwg.org
 c.whatwg.org
@@ -18,6 +19,7 @@ forums.whatwg.org
 fs.spec.whatwg.org
 fullscreen.spec.whatwg.org
 help.whatwg.org
+hid.spec.whatwg.org
 html-differences.whatwg.org
 html.spec.whatwg.org
 idea.whatwg.org
@@ -28,9 +30,11 @@ lists.whatwg.org
 mediasession.spec.whatwg.org
 mimesniff.spec.whatwg.org
 n.whatwg.org
+nfc.spec.whatwg.org
 notifications.spec.whatwg.org
 quirks.spec.whatwg.org
 resources.whatwg.org
+serial.spec.whatwg.org
 spec.whatwg.org
 specs.whatwg.org
 storage.spec.whatwg.org
@@ -39,6 +43,7 @@ svn.whatwg.org
 testutils.spec.whatwg.org
 url.spec.whatwg.org
 urlpattern.spec.whatwg.org
+usb.spec.whatwg.org
 validator.whatwg.org
 webidl.spec.whatwg.org
 websockets.spec.whatwg.org
